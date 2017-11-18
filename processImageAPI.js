@@ -103,20 +103,45 @@ function buildArgs(url, key) {
 
 function generateDescription(numOfPeople, mood) {
     var text = ""
+
     if(numOfPeople>1) {
         switch(mood) {
             case "happiness":
-                return "Hanging out with my "+ +" friends"
+                text += "Hanging out with my "+ numOfPeople-1 +" best friends"
+                break;
+            case "neutral":
+                text += "Relaxing with my "+ numOfPeople-1 +" friends"
+                break;
+            default:
+                text +="Just a picture of me and "+ numOfPeople-1 +" other people"
+                break;
+        }
+        if(landmarks.length>0) {
+            text += " by the " + landmarks[0]
+        }
+    } else if (numOfPeople == 1) {
+        case "happiness":
+                text += "Feeling happy"
+                break;
+            case "neutral":
+                text += "Relaxing"
+                break;
+            default:
+                text +="Just a picture of me"
+                break;
+        }
+        if(landmarks.length>0) {
+            text += " by the " + landmarks[0]
         }
     }
-
-
+    return text; 
 }
 
 //EXAMPLE CALL
-analyzeImage("https://s.yimg.com/ny/api/res/1.2/rJTe3BvjRp3ts4hGjqG59A--/YXBwaWQ9aGlnaGxhbmRlcjtzbT0xO3c9NzQ0O2g9NjI4/http://media.zenfs.com/en/homerun/feed_manager_auto_publish_494/cab9ccbe831cdb561167c26428482e2e").then(
+analyzeImage("https://buenviajeaespana.files.wordpress.com/2011/10/img_1809.jpg").then(
     function (success) {
         console.log(success);
+        console.log(generateDescription(success.numOfPeople, success.mood))
     },
     function (error) {
         console.log(error);
