@@ -152,9 +152,9 @@ function removeHashtagsQuestion(session, results) {
 }
 
 function addHashtagsQuestion(session) {
-	console.log("TU SAM 2");
+	session.send("TU SAM 2");
     session.send(currentNumberOfHashtagsMessage(returnArray(session.conversationData.hashtags)));
-	console.log("TU SAM 3");
+	session.send("TU SAM 3");
     builder.Prompts.choice(session, "Do you want to add some more hashtags?", [YES, NO]);
 }
 
