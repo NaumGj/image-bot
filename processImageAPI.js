@@ -174,4 +174,8 @@ analyzeImage("https://buenviajeaespana.files.wordpress.com/2011/10/img_1809.jpg"
     }
 );
 
+module.exports = {
+    analyzeImage: analyzeImage
+};
+
 

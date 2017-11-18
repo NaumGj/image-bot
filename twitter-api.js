@@ -90,7 +90,7 @@ function uploadTweet(imageUrl, status) {
 
 //EXAMPLE USAGE
 
-// uploadTweet(pathToMovie, "proba").then(
+// uploadTweet(pathToMovie, 'proba').then(
 //     function (success) {
 //         console.log(success);
 //     },
@@ -98,3 +98,31 @@ function uploadTweet(imageUrl, status) {
 //         console.log(error);
 //     }
 // );
+
+function searchTweets(query) {
+    return new Promise((resolve, reject) => {
+        client.get('search/tweets', {q: query}, (error, data, response) => {
+            if (error) {
+                console.log(error);
+                reject(error);
+            } else {
+                resolve(data);
+            }
+        });
+    });
+}
+
+//EXAMPLE USAGE
+
+// searchTweets('proba').then(
+//     function (success) {
+//         console.log(success);
+//     },
+//     function (error) {
+//         console.log(error);
+//     }
+// );
+
+module.exports = {
+    uploadTweet: uploadTweet
+};
