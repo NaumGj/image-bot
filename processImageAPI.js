@@ -1,84 +1,106 @@
-//Example POST method invocation 
 var Client = require('node-rest-client').Client;
 var client = new Client();
 
-// Replace the subscriptionKey string value with your valid subscription key.
-var subscriptionKeyVison = "13fb95a85c184168894c5491dc7718e0";
-var uriBaseVison = "https://westeurope.api.cognitive.microsoft.com/vision/v1.0/analyze?visualFeatures=Categories,Description,Color";
-
-// Replace the subscriptionKey string value with your valid subscription key.
-var subscriptionKeyFace = "705fe0f57f974b79846c4620c4333c97";
-var uriBaseFace = "https://westeurope.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceAttributes=age,gender,emotion";
+const config = {
+    vision: {
+        subscriptionKey: "13fb95a85c184168894c5491dc7718e0",
+        uriBase: "https://westeurope.api.cognitive.microsoft.com/vision/v1.0/analyze?visualFeatures=Categories,Description,Color"
+    },
+    face: {
+        subscriptionKey: "705fe0f57f974b79846c4620c4333c97",
+        uriBase: "https://westeurope.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceAttributes=age,gender,emotion"
+    }
+};
 
 function analyzeImage(url) {
-    return  new Promise(resolve, reject) => {
-        // set content-type header and data as json in args parameter 
-         var args = {
-            data: '{"url": ' + '"' + url + '"}',
-            headers: { "Content-Type": "application/json", "Ocp-Apim-Subscription-Key": subscriptionKeyVison}
-        };
-
-        client.post(uriBaseVison, args, function (data, response) {
+    return new Promise((resolve, reject) => {
+        client.post(config.vision.uriBase, buildArgs(url, config.vision.subscriptionKey), function (data, response) {
             resolve(findFaces(url, data));
+        }).on('error', function (error) {
+            reject(error);
         });
-    }
+    });
 }
 
 function findFaces(url, analyzeData) {
-
-    var args = {
-        data: '{"url": ' + '"' + url + '"}',
-        headers: { "Content-Type": "application/json", "Ocp-Apim-Subscription-Key": subscriptionKeyFace}
-    };
-
-    client.post(uriBaseFace, args, function (data, response) {
-        handleResponse(analyzeData, data)
+    return new Promise((resolve, reject) => {
+        client.post(config.face.uriBase, buildArgs(url, config.face.subscriptionKey), function (data, response) {
+            resolve(handleResponse(analyzeData, data));
+        }).on('error', function (error) {
+            reject(error);
+        });
     });
 }
 
 function handleResponse(analyzeData, faceData) {
-    console.log(analyzeData);
-    console.log(faceData);
-
     //Handle Emotions
-    var emotions = {"anger":0, "contempt":0, "disgust":0,"fear":0,"happiness":0,"neutral":0,"sadness":0,"surprise":0};
+    var emotions = {
+        "anger": 0,
+        "contempt": 0,
+        "disgust": 0,
+        "fear": 0,
+        "happiness": 0,
+        "neutral": 0,
+        "sadness": 0,
+        "surprise": 0
+    };
 
-    for(var i = 0; i<faceData.length;i++) {
+    for (var i = 0; i < faceData.length; i++) {
         var dict = faceData[i].faceAttributes.emotion;
 
         // Create items array
-        var items = Object.keys(dict).map(function(key) {
+        var items = Object.keys(dict).map(function (key) {
             return [key, dict[key]];
         });
 
         // Sort the array based on the second element
-        items.sort(function(first, second) {
+        items.sort(function (first, second) {
             return second[1] - first[1];
         });
 
-        emotions[items[0]]++ 
+        emotions[items[0]]++
     }
 
     // Create items array
-    var items = Object.keys(emotions).map(function(key) {
+    var items = Object.keys(emotions).map(function (key) {
         return [key, dict[key]];
     });
 
     // Sort the array based on the second element
-    items.sort(function(first, second) {
+    items.sort(function (first, second) {
         return second[1] - first[1];
     });
 
-    var json = JSON.parse('{ "NumOfPeople":'+ faceData.length + ', "caption":'+ JSON.stringify(analyzeData.description.captions[0].text) +', "tags":'+ JSON.stringify(analyzeData.description.tags) +', "mood":"' +items[0][0]+ '"}'); 
-    console.log(json)
+    return new Promise((resolve, reject) => {
+        try {
+            var result = {
+                numOfPeople: faceData.length,
+                caption: analyzeData.description.captions[0].text,
+                tags: analyzeData.description.tags,
+                mood: items[0][0]
+            };
+            resolve(result);
+        } catch (e) {
+            reject(e);
+        }
+    });
+}
 
+function buildArgs(url, key) {
+    return {
+        data: '{"url": ' + '"' + url + '"}',
+        headers: {"Content-Type": "application/json", "Ocp-Apim-Subscription-Key": key}
+    };
 }
 
 //EXAMPLE CALL
 analyzeImage("https://udemy-images.udemy.com/course/750x422/92446_9dad_7.jpg").then(
-function() {
+    function (success) {
+        console.log(success);
+    },
+    function (error) {
+        console.log(error);
+    }
+);
 
-}    );
-
-}
 

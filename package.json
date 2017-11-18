@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "botbuilder": "^3.8.4",
+    "node-rest-client": "^3.1.0",
     "restify": "^5.0.0",
     "twitter": "^1.7.1"
   },
