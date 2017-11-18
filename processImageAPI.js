@@ -45,13 +45,32 @@ function handleResponse(analyzeData, faceData) {
         "surprise": 0
     };
 
+	if(analyzeData == undefined || analyzeData == null) {
+		console.log("Error, no object")
+	}
+	if(analyzeData.categories == undefined) {
+		console.log("Error, second level")
+	}
+	if(analyzeData.categories[0].detail == undefined) {
+		console.log("Error, third level")
+		analyzeData.categories[0].detail = []
+	}
     var celebrities = analyzeData.categories[0].detail.celebrities
+	var landmarks = analyzeData.categories[0].detail.landmarks
+	var celebritiesList = [];
+	var landmarksList = [];
 
     if(celebrities) {
         celebrities.forEach(function(e) {
-            console.log(e.name)
+			celebritiesList.push(e.name)
         });
     }
+	
+	if(landmarks) {
+		landmarks.forEach(function(l) {
+			landmarksList.push(l.name)
+        });
+	}
 
     for (var i = 0; i < faceData.length; i++) {
         var dict = faceData[i].faceAttributes.emotion;
@@ -69,15 +88,19 @@ function handleResponse(analyzeData, faceData) {
         emotions[items[0]]++
     }
 
-    // Create items array
-    var items = Object.keys(emotions).map(function (key) {
-        return [key, dict[key]];
-    });
-
-    // Sort the array based on the second element
-    items.sort(function (first, second) {
-        return second[1] - first[1];
-    });
+	if(faceData.length>0) {
+		 // Create items array
+		var items = Object.keys(emotions).map(function (key) {
+			return [key, dict[key]];
+		});
+		
+		// Sort the array based on the second element
+		items.sort(function (first, second) {
+			return second[1] - first[1];
+		});
+	}else {
+		var items = [[""]]
+	}
 
     return new Promise((resolve, reject) => {
         try {
@@ -85,7 +108,9 @@ function handleResponse(analyzeData, faceData) {
                 numOfPeople: faceData.length,
                 caption: analyzeData.description.captions[0].text,
                 tags: analyzeData.description.tags,
-                mood: items[0][0]
+                mood: items[0][0],
+				celebrities: celebritiesList,
+				landmarks: landmarksList
             };
             resolve(result);
         } catch (e) {
@@ -114,7 +139,7 @@ function generateDescription(numOfPeople, mood) {
 }
 
 //EXAMPLE CALL
-analyzeImage("https://s.yimg.com/ny/api/res/1.2/rJTe3BvjRp3ts4hGjqG59A--/YXBwaWQ9aGlnaGxhbmRlcjtzbT0xO3c9NzQ0O2g9NjI4/http://media.zenfs.com/en/homerun/feed_manager_auto_publish_494/cab9ccbe831cdb561167c26428482e2e").then(
+analyzeImage("https://i.pinimg.com/736x/88/9d/ab/889dab7b8f656e930712be78c4e6434a--bradley-cooper-french-language.jpg").then(
     function (success) {
         console.log(success);
     },
