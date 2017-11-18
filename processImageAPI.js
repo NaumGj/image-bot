@@ -126,48 +126,61 @@ function buildArgs(url, key) {
     };
 }
 
-function generateDescription(numOfPeople, mood, landmarks) {
+function generateDescription(numOfPeople, mood, landmarks, celebrities) {
     var text = ""
 
-    if(numOfPeople>1) {
-        switch(mood) {
-            case "happiness":
-                text += "Hanging out with my "+ (numOfPeople-1) +" best friends"
-                break;
-            case "neutral":
-                text += "Relaxing with my "+ (numOfPeople-1) +" friends"
-                break;
-            default:
-                text += "Just a picture of me and "+ (numOfPeople-1) +" other people"
-                break;
+    if(celebrities.length>0) {
+        text += "OMG!! Look who I met! "
+        for(var i = 0; i<celebrities.length; i++) {
+            text += celebrities[i] + " "
         }
         if(landmarks.length>0) {
-            text += " by the " + landmarks[0]
+            text += "at the " + landmarks[0]
         }
-    } else if (numOfPeople == 1) {
-        switch(mood) {
-			case "happiness":
-                text += "Feeling happy"
-                break;
-            case "neutral":
-                text += "Relaxing"
-                break;
-            default:
-                text +="Just a picture of me"
-                break;
-        }
-        if(landmarks.length>0) {
-            text += " by the " + landmarks[0]
+        text += "I can't freaking breath!!"
+    } else if(numOfPeople==0 && landmarks.length>0) {
+        text += "Taking in the beauty of the " + landmarks[0]
+    } else {
+        if(numOfPeople>1) {
+            switch(mood) {
+                case "happiness":
+                    text += "Hanging out with my "+ (numOfPeople-1) +" best friends"
+                    break;
+                case "neutral":
+                    text += "Relaxing with my "+ (numOfPeople-1) +" friends"
+                    break;
+                default:
+                    text += "Just a picture of me and "+ (numOfPeople-1) +" other people"
+                    break;
+            }
+            if(landmarks.length>0) {
+                text += " by the " + landmarks[0]
+            }
+        } else if (numOfPeople == 1) {
+            switch(mood) {
+    			case "happiness":
+                    text += "Feeling happy"
+                    break;
+                case "neutral":
+                    text += "Relaxing"
+                    break;
+                default:
+                    text +="Just a picture of me"
+                    break;
+            }
+            if(landmarks.length>0) {
+                text += " by the " + landmarks[0]
+            }
         }
     }
     return text; 
 }
 
 //EXAMPLE CALL
-analyzeImage("https://buenviajeaespana.files.wordpress.com/2011/10/img_1809.jpg").then(
+analyzeImage("https://media1.britannica.com/eb-media/36/162636-004-B9E5EF88.jpg").then(
     function (success) {
         console.log(success);
-        console.log(generateDescription(success.numOfPeople, success.mood, success.landmarks))
+        console.log(generateDescription(success.numOfPeople, success.mood, success.landmarks, success.celebrities))
     },
     function (error) {
         console.log(error);
