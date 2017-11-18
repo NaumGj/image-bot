@@ -60,6 +60,8 @@ bot.dialog('/', [
 			// Echo back attachment
 			var attachment = msg.attachments[0];
 			session.send("You sent: " + JSON.stringify(attachment));
+			session.send(attachment.name);
+			session.send(attachment.size);
 			session.send({
 				text: "You sent:",
 				attachments: [
