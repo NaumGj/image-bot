@@ -45,29 +45,35 @@ function handleResponse(analyzeData, faceData) {
         "surprise": 0
     };
 
-	if(!analyzeData) {
-		analyzeData = {description: {captions: [{"text":""}], tags: ""},categories: [{detail: {celebrities:[],landmarks:[]}}]};
-	}
-	if(!analyzeData.categories) {
-		analyzeData = {description: {captions: [{"text":""}], tags: ""},categories: [{detail: {celebrities:[],landmarks:[]}}]};
-	}
-	
-    var celebrities = analyzeData.categories[0].detail.celebrities
-	var landmarks = analyzeData.categories[0].detail.landmarks
-	var celebritiesList = [];
-	var landmarksList = [];
+    if (!analyzeData) {
+        analyzeData = {
+            description: {captions: [{"text": ""}], tags: ""},
+            categories: [{detail: {celebrities: [], landmarks: []}}]
+        };
+    }
+    if (!analyzeData.categories) {
+        analyzeData = {
+            description: {captions: [{"text": ""}], tags: ""},
+            categories: [{detail: {celebrities: [], landmarks: []}}]
+        };
+    }
 
-    if(celebrities) {
-        celebrities.forEach(function(e) {
-			celebritiesList.push(e.name)
+    var celebrities = analyzeData.categories[0].detail.celebrities;
+    var landmarks = analyzeData.categories[0].detail.landmarks;
+    var celebritiesList = [];
+    var landmarksList = [];
+
+    if (celebrities) {
+        celebrities.forEach(function (e) {
+            celebritiesList.push(e.name)
         });
     }
-	
-	if(landmarks) {
-		landmarks.forEach(function(l) {
-			landmarksList.push(l.name)
+
+    if (landmarks) {
+        landmarks.forEach(function (l) {
+            landmarksList.push(l.name)
         });
-	}
+    }
 
     for (var i = 0; i < faceData.length; i++) {
         var dict = faceData[i].faceAttributes.emotion;
@@ -85,19 +91,19 @@ function handleResponse(analyzeData, faceData) {
         emotions[items[0]]++
     }
 
-	if(faceData.length>0) {
-		 // Create items array
-		var items = Object.keys(emotions).map(function (key) {
-			return [key, dict[key]];
-		});
-		
-		// Sort the array based on the second element
-		items.sort(function (first, second) {
-			return second[1] - first[1];
-		});
-	}else {
-		var items = [[""]]
-	}
+    if (faceData.length > 0) {
+        // Create items array
+        var items = Object.keys(emotions).map(function (key) {
+            return [key, dict[key]];
+        });
+
+        // Sort the array based on the second element
+        items.sort(function (first, second) {
+            return second[1] - first[1];
+        });
+    } else {
+        var items = [[""]]
+    }
 
     var caption = generateDescription(faceData.length, items[0][0], landmarksList, celebritiesList)
 
@@ -108,8 +114,8 @@ function handleResponse(analyzeData, faceData) {
                 caption: analyzeData.description.captions[0].text,
                 tags: analyzeData.description.tags,
                 mood: items[0][0],
-				celebrities: celebritiesList,
-				landmarks: landmarksList,
+                celebrities: celebritiesList,
+                landmarks: landmarksList,
                 caption: caption
             };
             resolve(result);
@@ -127,53 +133,53 @@ function buildArgs(url, key) {
 }
 
 function generateDescription(numOfPeople, mood, landmarks, celebrities) {
-    var text = ""
+    var text = "";
 
-    if(celebrities.length>0) {
-        text += "OMG!! Look who I met! "
-        for(var i = 0; i<celebrities.length; i++) {
+    if (celebrities.length > 0) {
+        text += "OMG!! Look who I met! ";
+        for (var i = 0; i < celebrities.length; i++) {
             text += celebrities[i] + " "
         }
-        if(landmarks.length>0) {
+        if (landmarks.length > 0) {
             text += "at the " + landmarks[0]
         }
-        text += "I cant freaking breath!!"
-    } else if(numOfPeople==0 && landmarks.length>0) {
+        text += "I cant freaking breath!!";
+    } else if (numOfPeople == 0 && landmarks.length > 0) {
         text += "Taking in the beauty of the " + landmarks[0]
     } else {
-        if(numOfPeople>1) {
-            switch(mood) {
+        if (numOfPeople > 1) {
+            switch (mood) {
                 case "happiness":
-                    text += "Hanging out with my "+ (numOfPeople-1) +" best friends"
+                    text += "Hanging out with my " + (numOfPeople - 1) + " best friends";
                     break;
                 case "neutral":
-                    text += "Relaxing with my "+ (numOfPeople-1) +" friends"
+                    text += "Relaxing with my " + (numOfPeople - 1) + " friends";
                     break;
                 default:
-                    text += "Just a picture of me and "+ (numOfPeople-1) +" other people"
+                    text += "Just a picture of me and " + (numOfPeople - 1) + " other people";
                     break;
             }
-            if(landmarks.length>0) {
+            if (landmarks.length > 0) {
                 text += " by the " + landmarks[0]
             }
         } else if (numOfPeople == 1) {
-            switch(mood) {
-    			case "happiness":
-                    text += "Feeling happy"
+            switch (mood) {
+                case "happiness":
+                    text += "Feeling happy";
                     break;
                 case "neutral":
-                    text += "Relaxing"
+                    text += "Relaxing";
                     break;
                 default:
-                    text +="Just a picture of me"
+                    text += "Just a picture of me";
                     break;
             }
-            if(landmarks.length>0) {
+            if (landmarks.length > 0) {
                 text += " by the " + landmarks[0]
             }
         }
     }
-    return text; 
+    return text;
 }
 
 //EXAMPLE CALL

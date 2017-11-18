@@ -165,7 +165,7 @@ function beginAddHashTagsDialog(session, results) {
 }
 
 function postPhotoQuestion(session) {
-    session.send(currentNumberOfHashtagsMessage(returnArray(session.conversationData.hashtags)));
+    session.send(currentNumberOfHashtagsMessage(session.conversationData.hashtags));
     builder.Prompts.choice(session, "Do you want to post the Twizzy tweet?", [YES, NO]);
 }
 
