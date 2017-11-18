@@ -143,7 +143,6 @@ function imageAnalyzer(session) {
 }
 
 function removeHashtagsQuestion(session, results) {
-	console.log("TU SAM 1");
     var doRemoveHashtags = results.response.entity;
     if (YES == doRemoveHashtags) {
         session.beginDialog('removeHashtags');
@@ -153,7 +152,7 @@ function removeHashtagsQuestion(session, results) {
 
 function addHashtagsQuestion(session) {
 	session.send("TU SAM 2");
-    session.send(currentNumberOfHashtagsMessage(returnArray(session.conversationData.hashtags)));
+    session.send(currentNumberOfHashtagsMessage(session.conversationData.hashtags));
 	session.send("TU SAM 3");
     builder.Prompts.choice(session, "Do you want to add some more hashtags?", [YES, NO]);
 }
