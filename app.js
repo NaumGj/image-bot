@@ -135,6 +135,7 @@ function imageAnalyzer(session) {
             builder.Prompts.choice(session, "Do you want to remove some of the recommended hashtags?", [YES, NO]);
         },
         function (error) {
+			session.send("ERROR");
             console.log(error);
             session.endConversation(error);
         }
@@ -142,14 +143,18 @@ function imageAnalyzer(session) {
 }
 
 function removeHashtagsQuestion(session, results) {
+	console.log("TU SAM 1");
     var doRemoveHashtags = results.response.entity;
     if (YES == doRemoveHashtags) {
         session.beginDialog('removeHashtags');
     }
+	session.send("TU SAM");
 }
 
 function addHashtagsQuestion(session) {
+	console.log("TU SAM 2");
     session.send(currentNumberOfHashtagsMessage(returnArray(session.conversationData.hashtags)));
+	console.log("TU SAM 3");
     builder.Prompts.choice(session, "Do you want to add some more hashtags?", [YES, NO]);
 }
 
