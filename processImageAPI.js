@@ -140,7 +140,7 @@ function generateDescription(numOfPeople, mood, landmarks, celebrities) {
         if(landmarks.length>0) {
             text += "at the " + landmarks[0]
         }
-        text += "I can't freaking breath!!"
+        text += "I cant freaking breath!!"
     } else if(numOfPeople==0 && landmarks.length>0) {
         text += "Taking in the beauty of the " + landmarks[0]
     } else {
@@ -180,7 +180,7 @@ function generateDescription(numOfPeople, mood, landmarks, celebrities) {
 }
 
 //EXAMPLE CALL
-analyzeImage("https://media1.britannica.com/eb-media/36/162636-004-B9E5EF88.jpg").then(
+analyzeImage("https://www.bigdipper.in/wp-content/uploads/2017/07/friends.jpg").then(
     function (success) {
         console.log(success);
     },
@@ -192,5 +192,3 @@ analyzeImage("https://media1.britannica.com/eb-media/36/162636-004-B9E5EF88.jpg"
 module.exports = {
     analyzeImage: analyzeImage
 };
-
-
