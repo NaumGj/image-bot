@@ -164,7 +164,7 @@ function generateDescription(numOfPeople, mood) {
 }
 
 //EXAMPLE CALL
-analyzeImage("https://i.pinimg.com/736x/88/9d/ab/889dab7b8f656e930712be78c4e6434a--bradley-cooper-french-language.jpg").then(
+analyzeImage("http://www.pikosky.sk/wp-content/uploads/2014/03/pariseva-longoria-poses-eiffel-tower.jpg").then(
     function (success) {
         console.log(success);
         console.log(generateDescription(success.numOfPeople, success.mood))
