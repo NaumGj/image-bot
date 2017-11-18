@@ -102,6 +102,8 @@ function handleResponse(analyzeData, faceData) {
 		var items = [[""]]
 	}
 
+    var caption = generateDescription(faceData.length, items[0][0], landmarksList, celebritiesList)
+
     return new Promise((resolve, reject) => {
         try {
             var result = {
@@ -110,7 +112,8 @@ function handleResponse(analyzeData, faceData) {
                 tags: analyzeData.description.tags,
                 mood: items[0][0],
 				celebrities: celebritiesList,
-				landmarks: landmarksList
+				landmarks: landmarksList,
+                caption: caption
             };
             resolve(result);
         } catch (e) {
@@ -180,7 +183,6 @@ function generateDescription(numOfPeople, mood, landmarks, celebrities) {
 analyzeImage("https://media1.britannica.com/eb-media/36/162636-004-B9E5EF88.jpg").then(
     function (success) {
         console.log(success);
-        console.log(generateDescription(success.numOfPeople, success.mood, success.landmarks, success.celebrities))
     },
     function (error) {
         console.log(error);
