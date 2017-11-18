@@ -174,8 +174,7 @@ function postPhotoAction(session, results) {
     if (YES == doPostTweet) {
         twizzy.uploadTweet(session.conversationData.photoUrl, 'TEST STATUS').then(function (success) {
                 session.conversationData.twizzyLink = success.text;
-                session.send('UPAO SAM');
-                session.send(session.conversationData.twizzyLink);
+                showTweetLink(session);
             },
             function (error) {
                 console.log(error);
