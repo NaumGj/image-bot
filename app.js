@@ -4,19 +4,21 @@ A simple echo bot for the Microsoft Bot Framework.
 
 var restify = require('restify');
 var builder = require('botbuilder');
+var ai = require('processImageAPI');
+var twizzy = require('twitter-api');
 
 // Setup Restify Server
 var server = restify.createServer();
 server.listen(process.env.port || process.env.PORT || 3978, function () {
-   console.log('%s listening to %s', server.name, server.url); 
+    console.log('%s listening to %s', server.name, server.url);
 });
-  
+
 // Create chat connector for communicating with the Bot Framework Service
 var connector = new builder.ChatConnector({
     appId: process.env.MicrosoftAppId,
     appPassword: process.env.MicrosoftAppPassword,
     stateEndpoint: process.env.BotStateEndpoint,
-    openIdMetadata: process.env.BotOpenIdMetadata 
+    openIdMetadata: process.env.BotOpenIdMetadata
 });
 
 // Listen for messages from users 
@@ -32,143 +34,158 @@ server.post('/api/messages', connector.listen());
 var bot = new builder.UniversalBot(connector);
 
 bot.dialog('/', [
-	function (session) {
+    function (session) {
         builder.Prompts.choice(session, "Hi :) Do you want me to help you upload a photo on Twitter?", ["Yes", "No"]);
-	},
-	function (session, results) {
-		var doPhotoUpload = results.response.entity;
+    },
+    function (session, results) {
+        var doPhotoUpload = results.response.entity;
         if ("Yes" == doPhotoUpload) {
-			session.beginDialog('uploadPhoto');
-		} else {
-			session.endConversation("OK :)");
-		}
+            session.beginDialog('uploadPhoto');
+        } else {
+            session.endConversation("OK :)");
+        }
     },
-	function (session) {
-		session.send("I generated a few hashtags for you according to your photo. Here they are :)");
-		console.log("TESTTTTT");
-		session.conversationData.hashtags = getHashtagsForPhoto(session.conversationData.photoUrl);
-		session.send(printArray(session.conversationData.hashtags));
-		builder.Prompts.choice(session, "Do you want to remove some of the hashtags?", ["Yes", "No"]);
-	},
-	function (session, results) {
-		var doRemoveHashtags = results.response.entity;
+    function (session) {
+        ai.analyzeImage(session.conversationData.photoUrl).then(
+            function (success) {
+                console.log(success);
+                session.send("I generated a few hashtags for you according to your photo. Here they are :)");
+                session.conversationData.hashtags = success.tags;
+                session.send(returnArray(session.conversationData.hashtags));
+                builder.Prompts.choice(session, "Do you want to remove some of the hashtags?", ["Yes", "No"]);
+            },
+            function (error) {
+                console.log(error);
+                session.endConversation(error);
+            }
+        );
+    },
+    function (session, results) {
+        var doRemoveHashtags = results.response.entity;
         if ("Yes" == doRemoveHashtags) {
-			session.beginDialog('removeHashtags');
-		}
+            session.beginDialog('removeHashtags');
+        }
     },
-	function (session) {
-		session.send("The current hashtags for your photo are: " + printArray(session.conversationData.hashtags));
-		builder.Prompts.choice(session, "Do you want to add some hashtags?", ["Yes", "No"]);
-	},
-	function (session, results) {
-		var doAddHashtags = results.response.entity;
+    function (session) {
+        session.send("The current hashtags for your photo are: " + returnArray(session.conversationData.hashtags));
+        builder.Prompts.choice(session, "Do you want to add some hashtags?", ["Yes", "No"]);
+    },
+    function (session, results) {
+        var doAddHashtags = results.response.entity;
         if ("Yes" == doAddHashtags) {
-			session.beginDialog('addHashtags');
-		}
+            session.beginDialog('addHashtags');
+        }
     },
-	function (session) {
-		session.send("The current hashtags for your photo are: " + printArray(session.conversationData.hashtags));
-		builder.Prompts.choice(session, "Do you want to post the photo?", ["Yes", "No"]);
-	},
-	function (session, results) {
-		var doAddHashtags = results.response.entity;
-        if ("Yes" == doAddHashtags) {
-			session.conversationData.imageUploaded = uploadPhoto();
-		} else {
-			session.endConversation("Your photo won't be uploaded.");
-		}
+    function (session) {
+        session.send("The current hashtags for your photo are: " + returnArray(session.conversationData.hashtags));
+        builder.Prompts.choice(session, "Do you want to post the photo?", ["Yes", "No"]);
     },
-	function (session) {
-		if (session.conversationData.imageUploaded) {
-			session.send("You have successfully uploaded the post!");
-		} else {
-			session.send("The post was not uploaded successfully.");
-		}
-	},
-	
+    function (session, results) {
+        var doPostTweet = results.response.entity;
+        if ("Yes" == doPostTweet) {
+            twizzy.uploadTweet(session.conversationData.photoUrl, "TEST STATUS").then(function (success) {
+                    console.log(success);
+                    session.conversationData.twizzyLink = success.text;
+                },
+                function (error) {
+                    console.log(error);
+                    session.endConversation("Your photo won't be uploaded.");
+                });
+        } else {
+            session.endConversation("Your photo won't be uploaded.");
+        }
+    },
+    function (session) {
+        if (session.conversationData.twizzyLink) {
+            session.send(session.conversationData.twizzyLink);
+        } else {
+            session.send("There is no tweet to show");
+        }
+    },
+
 ]);
 
 
 bot.dialog('uploadPhoto', [
-	function (session) {
-		builder.Prompts.attachment(session, "Please upload a photo.");
+    function (session) {
+        builder.Prompts.attachment(session, "Please upload a photo.");
     },
     function (session) {
-		var msg = session.message;
-		if (msg.attachments && msg.attachments.length > 0) {
-			// Echo back attachment
-			var attachment = msg.attachments[0];
-			session.conversationData.photoUrl = attachment.contentUrl;
-			/* session.send("You sent: " + JSON.stringify(attachment));
-			session.send({
-				text: "You sent:",
-				attachments: [
-					{
-						contentType: attachment.contentType,
-						contentUrl: attachment.contentUrl,
-						name: attachment.name
-					}
-				]
-			});*/
-			session.endDialog();
-		} else {
-			session.replaceDialog("uploadPhoto", { reprompt: true });
-			//builder.Prompts.attachment(session, "A photo was not uploaded. Please upload a photo.");
-		}
-	}
+        var msg = session.message;
+        if (msg.attachments && msg.attachments.length > 0) {
+            // Echo back attachment
+            var attachment = msg.attachments[0];
+            session.conversationData.photoUrl = attachment.contentUrl;
+            /* session.send("You sent: " + JSON.stringify(attachment));
+            session.send({
+                text: "You sent:",
+                attachments: [
+                    {
+                        contentType: attachment.contentType,
+                        contentUrl: attachment.contentUrl,
+                        name: attachment.name
+                    }
+                ]
+            });*/
+            session.endDialog();
+        } else {
+            session.replaceDialog("uploadPhoto", {reprompt: true});
+            //builder.Prompts.attachment(session, "A photo was not uploaded. Please upload a photo.");
+        }
+    }
 ]);
 
 bot.dialog('removeHashtags', [
-	function (session) {
-		builder.Prompts.text(session, "Please type the hashtags you want to remove.");
+    function (session) {
+        builder.Prompts.text(session, "Please type the hashtags you want to remove.");
     },
-	function (session, results) {
-		var hashtagsToRemoveLine = results.response;
-		var hashtagsToRemoveArray = hashtagsToRemoveLine.split(",").map(function(hashtagToRemove) {
-			return hashtagToRemove.trim();
-		});
-		
-		session.conversationData.hashtags = session.conversationData.hashtags.filter( function(hashtag) {
-			return hashtagsToRemoveArray.indexOf(hashtag) < 0;
-		});
-		session.endDialog();
+    function (session, results) {
+        var hashtagsToRemoveLine = results.response;
+        var hashtagsToRemoveArray = hashtagsToRemoveLine.split(",").map(function (hashtagToRemove) {
+            return hashtagToRemove.trim();
+        });
+
+        session.conversationData.hashtags = session.conversationData.hashtags.filter(function (hashtag) {
+            return hashtagsToRemoveArray.indexOf(hashtag) < 0;
+        });
+        session.endDialog();
     }
 ]);
 
 bot.dialog('addHashtags', [
-	function (session) {
-		builder.Prompts.text(session, "Please type the hashtags you want to add.");
+    function (session) {
+        builder.Prompts.text(session, "Please type the hashtags you want to add.");
     },
-	function (session, results) {
-		var hashtagsToAddLine = results.response;
-		var hashtagsToAddArray = hashtagsToAddLine.split(",").map(function(hashtagToAdd) {
-			return hashtagToAdd.trim();
-		});
-		
-		session.conversationData.hashtags = hashtagsToAddArray.concat(session.conversationData.hashtags);
-		session.endDialog();
+    function (session, results) {
+        var hashtagsToAddLine = results.response;
+        var hashtagsToAddArray = hashtagsToAddLine.split(",").map(function (hashtagToAdd) {
+            return hashtagToAdd.trim();
+        });
+
+        session.conversationData.hashtags = hashtagsToAddArray.concat(session.conversationData.hashtags);
+        session.endDialog();
     }
 ]);
 
 
-function printArray(array) {
-	var hashtagsString = "";
-	array.forEach(function(hashtag) {
-		if (hashtagsString != "") {
-			hashtagsString += ", ";
-		}
-		hashtagsString += hashtag;
-	});
-	
-	return hashtagsString;
+function returnArray(array) {
+    var hashtagsString = "";
+    array.forEach(function (hashtag) {
+        if (hashtagsString != "") {
+            hashtagsString += ", ";
+        }
+        hashtagsString += hashtag;
+    });
+
+    return hashtagsString;
 }
 
 
 function getHashtagsForPhoto(theObject) {
-	return ["beach", "summer", "beautiful"];
+    return ["beach", "summer", "beautiful"];
 }
 
 function uploadPhoto() {
-	return true;
+    return true;
 }
 
