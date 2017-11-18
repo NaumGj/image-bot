@@ -126,19 +126,19 @@ function buildArgs(url, key) {
     };
 }
 
-function generateDescription(numOfPeople, mood) {
+function generateDescription(numOfPeople, mood, landmarks) {
     var text = ""
 
     if(numOfPeople>1) {
         switch(mood) {
             case "happiness":
-                text += "Hanging out with my "+ numOfPeople-1 +" best friends"
+                text += "Hanging out with my "+ (numOfPeople-1) +" best friends"
                 break;
             case "neutral":
-                text += "Relaxing with my "+ numOfPeople-1 +" friends"
+                text += "Relaxing with my "+ (numOfPeople-1) +" friends"
                 break;
             default:
-                text +="Just a picture of me and "+ numOfPeople-1 +" other people"
+                text += "Just a picture of me and "+ (numOfPeople-1) +" other people"
                 break;
         }
         if(landmarks.length>0) {
@@ -164,10 +164,10 @@ function generateDescription(numOfPeople, mood) {
 }
 
 //EXAMPLE CALL
-analyzeImage("https://i.pinimg.com/736x/88/9d/ab/889dab7b8f656e930712be78c4e6434a--bradley-cooper-french-language.jpg").then(
+analyzeImage("https://buenviajeaespana.files.wordpress.com/2011/10/img_1809.jpg").then(
     function (success) {
         console.log(success);
-        console.log(generateDescription(success.numOfPeople, success.mood))
+        console.log(generateDescription(success.numOfPeople, success.mood, success.landmarks))
     },
     function (error) {
         console.log(error);
