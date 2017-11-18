@@ -123,10 +123,14 @@ function photoUploadQuestion(session, results) {
 }
 
 function imageAnalyzer(session) {
+	console.log(session.conversationData.photoUrl);
     ai.analyzeImage(session.conversationData.photoUrl).then(
         function (success) {
             session.send("I have generated a couple of hashtags for you according to your photo. Here they are: :)");
-            session.conversationData.hashtags = success.tags;
+            console.log(success);
+			session.conversationData.hashtags = success.tags;
+			console.log("ALOOOOOOOOOOOOOO");
+			console.log(session.conversationData.hashtags);
             session.send(returnArray(session.conversationData.hashtags));
             builder.Prompts.choice(session, "Do you want to remove some of the recommended hashtags?", [YES, NO]);
         },
@@ -193,6 +197,8 @@ function handlePhotoAttachment(session) {
     if (msg.attachments && msg.attachments.length > 0) {
         var attachment = msg.attachments[0];
         session.conversationData.photoUrl = attachment.contentUrl;
+		session.send("You sent: " + JSON.stringify(attachment));
+		session.send("URL: " + attachment.contentUrl);
         session.endDialog();
     } else {
         session.replaceDialog("uploadPhoto", {reprompt: true});
