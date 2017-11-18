@@ -4,8 +4,8 @@ A simple echo bot for the Microsoft Bot Framework.
 
 var restify = require('restify');
 var builder = require('botbuilder');
-var ai = require('processImageAPI');
-var twizzy = require('twitter-api');
+var ai = require('./processImageAPI');
+var twizzy = require('./twitter-api');
 
 // Setup Restify Server
 var server = restify.createServer();
