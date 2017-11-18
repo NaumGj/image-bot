@@ -38,6 +38,7 @@ bot.dialog('/', [
     function (session, results) {
         session.userData.name = results.response;
 		session.send("Hi " + results.response);
+		builder.Prompts.attachment(session, "Upload a picture for me.");
 		//builder.Prompts.number(session, "Hi " + results.response + ", please upload a picture?!");
         // builder.Prompts.number(session, "Hi " + results.response + ", How many years have you been coding?"); 
     },
@@ -51,7 +52,9 @@ bot.dialog('/', [
                     " you've been programming for " + session.userData.coding + 
                     " years and use " + session.userData.language + ".");
     },*/
-	function (session) {
+	function (session, results) {
+		console.log(results);
+		console.log(session.message);
 		var msg = session.message;
 		if (msg.attachments && msg.attachments.length > 0) {
 			// Echo back attachment
