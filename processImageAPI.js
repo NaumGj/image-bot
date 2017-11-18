@@ -45,16 +45,16 @@ function handleResponse(analyzeData, faceData) {
         "surprise": 0
     };
 
-	if(analyzeData == undefined || analyzeData == null) {
-		console.log("Error, no object")
+	if(!analyzeData) {
+		analyzeData = {description: {captions: [{"text":""}], tags: ""},categories: [{detail: {celebrities:[],landmarks:[]}}]};
 	}
-	if(analyzeData.categories == undefined) {
-		console.log("Error, second level")
+	/*if(!analyzeData.categories[0]) {
+		analyzeData.push({categories:[{detail:{}}]})
 	}
-	if(analyzeData.categories[0].detail == undefined) {
+	if(!analyzeData.categories[0].detail) {
 		console.log("Error, third level")
-		analyzeData.categories[0].detail = []
-	}
+		//analyzeData.categories[0].detail = {"celebrities": [], "landmarks" : []}
+	}*/
     var celebrities = analyzeData.categories[0].detail.celebrities
 	var landmarks = analyzeData.categories[0].detail.landmarks
 	var celebritiesList = [];
