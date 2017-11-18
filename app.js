@@ -174,6 +174,8 @@ function postPhotoAction(session, results) {
     if (YES == doPostTweet) {
         twizzy.uploadTweet(session.conversationData.photoUrl, 'TEST STATUS').then(function (success) {
                 session.conversationData.twizzyLink = success.text;
+                session.send('UPAO SAM');
+                session.send(session.conversationData.twizzyLink);
             },
             function (error) {
                 console.log(error);
@@ -187,7 +189,9 @@ function postPhotoAction(session, results) {
 }
 
 function showTweetLink(session) {
+    session.send('showTweetLink METHOD');
     if (session.conversationData.twizzyLink) {
+        session.send('I OVDE SAM USAO');
         session.send(session.conversationData.twizzyLink);
     } else {
         session.send("There is no tweet to show. :(");

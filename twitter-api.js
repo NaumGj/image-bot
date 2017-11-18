@@ -9,7 +9,7 @@ var client = new Twitter({
     access_token_secret: 'A03h5PZHihNwWUqx7VC5iHiC5rmEVFkpDxQkZ7eBZoCwz'
 });
 
-const pathToMovie = 'http://media-cdn.tripadvisor.com/media/photo-s/0e/85/48/e6/seven-mile-beach-grand.jpg';
+const pathToMovie = 'https://media-cdn.tripadvisor.com/media/photo-s/0e/85/48/e6/seven-mile-beach-grand.jpg';
 const mediaType = 'image/jpg'; // `'video/mp4'` is also supported
 var mediaData = {};
 var mediaSize = {};
