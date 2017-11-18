@@ -33,74 +33,36 @@ server.post('/api/messages', connector.listen());
 // Create your bot with a function to receive messages from the user
 var bot = new builder.UniversalBot(connector);
 
+const YES = "Yes";
+const NO = "No";
+
 bot.dialog('/', [
     function (session) {
-        builder.Prompts.choice(session, "Hi :) Do you want me to help you upload a photo on Twitter?", ["Yes", "No"]);
+        initialPrompt(session);
     },
     function (session, results) {
-        var doPhotoUpload = results.response.entity;
-        if ("Yes" == doPhotoUpload) {
-            session.beginDialog('uploadPhoto');
-        } else {
-            session.endConversation("OK :)");
-        }
+        photoUploadQuestion(session, results);
     },
     function (session) {
-        ai.analyzeImage(session.conversationData.photoUrl).then(
-            function (success) {
-                console.log(success);
-                session.send("I generated a few hashtags for you according to your photo. Here they are :)");
-                session.conversationData.hashtags = success.tags;
-                session.send(returnArray(session.conversationData.hashtags));
-                builder.Prompts.choice(session, "Do you want to remove some of the hashtags?", ["Yes", "No"]);
-            },
-            function (error) {
-                console.log(error);
-                session.endConversation(error);
-            }
-        );
+        imageAnalyzer(session);
     },
     function (session, results) {
-        var doRemoveHashtags = results.response.entity;
-        if ("Yes" == doRemoveHashtags) {
-            session.beginDialog('removeHashtags');
-        }
+        removeHashtagsQuestion(session, results);
     },
     function (session) {
-        session.send("The current hashtags for your photo are: " + returnArray(session.conversationData.hashtags));
-        builder.Prompts.choice(session, "Do you want to add some hashtags?", ["Yes", "No"]);
+        addHashtagsQuestion(session);
     },
     function (session, results) {
-        var doAddHashtags = results.response.entity;
-        if ("Yes" == doAddHashtags) {
-            session.beginDialog('addHashtags');
-        }
+        beginAddHashTagsDialog(session, results);
     },
     function (session) {
-        session.send("The current hashtags for your photo are: " + returnArray(session.conversationData.hashtags));
-        builder.Prompts.choice(session, "Do you want to post the photo?", ["Yes", "No"]);
+        postPhotoQuestion(session);
     },
     function (session, results) {
-        var doPostTweet = results.response.entity;
-        if ("Yes" == doPostTweet) {
-            twizzy.uploadTweet(session.conversationData.photoUrl, "TEST STATUS").then(function (success) {
-                    console.log(success);
-                    session.conversationData.twizzyLink = success.text;
-                },
-                function (error) {
-                    console.log(error);
-                    session.endConversation("Your photo won't be uploaded.");
-                });
-        } else {
-            session.endConversation("Your photo won't be uploaded.");
-        }
+        postPhotoAction(session, results);
     },
     function (session) {
-        if (session.conversationData.twizzyLink) {
-            session.send(session.conversationData.twizzyLink);
-        } else {
-            session.send("There is no tweet to show");
-        }
+        showTweetLink(session);
     },
 
 ]);
@@ -108,68 +70,35 @@ bot.dialog('/', [
 
 bot.dialog('uploadPhoto', [
     function (session) {
-        builder.Prompts.attachment(session, "Please upload a photo.");
+        photoUploadPrompt(session);
     },
     function (session) {
-        var msg = session.message;
-        if (msg.attachments && msg.attachments.length > 0) {
-            // Echo back attachment
-            var attachment = msg.attachments[0];
-            session.conversationData.photoUrl = attachment.contentUrl;
-            /* session.send("You sent: " + JSON.stringify(attachment));
-            session.send({
-                text: "You sent:",
-                attachments: [
-                    {
-                        contentType: attachment.contentType,
-                        contentUrl: attachment.contentUrl,
-                        name: attachment.name
-                    }
-                ]
-            });*/
-            session.endDialog();
-        } else {
-            session.replaceDialog("uploadPhoto", {reprompt: true});
-            //builder.Prompts.attachment(session, "A photo was not uploaded. Please upload a photo.");
-        }
+        handlePhotoAttachment(session);
     }
 ]);
 
 bot.dialog('removeHashtags', [
     function (session) {
-        builder.Prompts.text(session, "Please type the hashtags you want to remove.");
+        removeHashtagsPrompt(session);
     },
     function (session, results) {
-        var hashtagsToRemoveLine = results.response;
-        var hashtagsToRemoveArray = hashtagsToRemoveLine.split(",").map(function (hashtagToRemove) {
-            return hashtagToRemove.trim();
-        });
-
-        session.conversationData.hashtags = session.conversationData.hashtags.filter(function (hashtag) {
-            return hashtagsToRemoveArray.indexOf(hashtag) < 0;
-        });
-        session.endDialog();
+        removeHashtagsAction(session, results);
     }
 ]);
 
 bot.dialog('addHashtags', [
     function (session) {
-        builder.Prompts.text(session, "Please type the hashtags you want to add.");
+        addHashtagsPrompt(session);
     },
     function (session, results) {
-        var hashtagsToAddLine = results.response;
-        var hashtagsToAddArray = hashtagsToAddLine.split(",").map(function (hashtagToAdd) {
-            return hashtagToAdd.trim();
-        });
-
-        session.conversationData.hashtags = hashtagsToAddArray.concat(session.conversationData.hashtags);
-        session.endDialog();
+        addHashtagsAction(session, results);
     }
 ]);
 
 
 function returnArray(array) {
     var hashtagsString = "";
+
     array.forEach(function (hashtag) {
         if (hashtagsString != "") {
             hashtagsString += ", ";
@@ -180,12 +109,127 @@ function returnArray(array) {
     return hashtagsString;
 }
 
-
-function getHashtagsForPhoto(theObject) {
-    return ["beach", "summer", "beautiful"];
+function initialPrompt(session) {
+    builder.Prompts.choice(session, "Hi :)\nMy name is Twizzy, do you want me to help you with posting your new photo on Twitter?", [YES, NO]);
 }
 
-function uploadPhoto() {
-    return true;
+function photoUploadQuestion(session, results) {
+    var doPhotoUpload = results.response.entity;
+    if (YES == doPhotoUpload) {
+        session.beginDialog('uploadPhoto');
+    } else {
+        session.endConversation("OK. You can find me here whenever you want. ;)");
+    }
+}
+
+function imageAnalyzer(session) {
+    ai.analyzeImage(session.conversationData.photoUrl).then(
+        function (success) {
+            session.send("I have generated a couple of hashtags for you according to your photo. Here they are: :)");
+            session.conversationData.hashtags = success.tags;
+            session.send(returnArray(session.conversationData.hashtags));
+            builder.Prompts.choice(session, "Do you want to remove some of the recommended hashtags?", [YES, NO]);
+        },
+        function (error) {
+            console.log(error);
+            session.endConversation(error);
+        }
+    );
+}
+
+function removeHashtagsQuestion(session, results) {
+    var doRemoveHashtags = results.response.entity;
+    if (YES == doRemoveHashtags) {
+        session.beginDialog('removeHashtags');
+    }
+}
+
+function addHashtagsQuestion(session) {
+    session.send(currentNumberOfHashtagsMessage(returnArray(session.conversationData.hashtags)));
+    builder.Prompts.choice(session, "Do you want to add some more hashtags?", [YES, NO]);
+}
+
+function beginAddHashTagsDialog(session, results) {
+    var doAddHashtags = results.response.entity;
+    if (YES == doAddHashtags) {
+        session.beginDialog('addHashtags');
+    }
+}
+
+function postPhotoQuestion(session) {
+    session.send(currentNumberOfHashtagsMessage(returnArray(session.conversationData.hashtags)));
+    builder.Prompts.choice(session, "Do you want to post the Twizzy tweet?", [YES, NO]);
+}
+
+function postPhotoAction(session, results) {
+    var doPostTweet = results.response.entity;
+    if (YES == doPostTweet) {
+        twizzy.uploadTweet(session.conversationData.photoUrl, "TEST STATUS").then(function (success) {
+                session.conversationData.twizzyLink = success.text;
+            },
+            function (error) {
+                console.log(error);
+                session.endConversation("Your photo cannot be uploaded. :(");
+            });
+    } else {
+        session.endConversation("Your photo won't be uploaded.");
+    }
+}
+
+function showTweetLink(session) {
+    if (session.conversationData.twizzyLink) {
+        session.send(session.conversationData.twizzyLink);
+    } else {
+        session.send("There is no tweet to show. :(");
+    }
+}
+
+function photoUploadPrompt(session) {
+    builder.Prompts.attachment(session, "Please upload a photo from your gallery.");
+}
+
+function handlePhotoAttachment(session) {
+    var msg = session.message;
+    if (msg.attachments && msg.attachments.length > 0) {
+        var attachment = msg.attachments[0];
+        session.conversationData.photoUrl = attachment.contentUrl;
+        session.endDialog();
+    } else {
+        session.replaceDialog("uploadPhoto", {reprompt: true});
+    }
+}
+
+function removeHashtagsPrompt(session) {
+    builder.Prompts.text(session, "Please type the hashtags you would like to remove.");
+}
+
+function removeHashtagsAction(session, results) {
+    var hashtagsToRemoveLine = results.response;
+    var hashtagsToRemoveArray = hashtagsToRemoveLine.split(",").map(function (hashtagToRemove) {
+        return hashtagToRemove.trim().toLowerCase();
+    });
+
+    session.conversationData.hashtags = session.conversationData.hashtags.filter(function (hashtag) {
+        return hashtagsToRemoveArray.indexOf(hashtag) < 0;
+    });
+    session.endDialog();
+}
+
+function addHashtagsPrompt(session) {
+    builder.Prompts.text(session, "Please type the hashtags you would like to add.");
+}
+
+function addHashtagsAction(session, results) {
+    var hashtagsToAddLine = results.response;
+    var hashtagsToAddArray = hashtagsToAddLine.split(",").map(function (hashtagToAdd) {
+        return hashtagToAdd.trim().toLowerCase();
+    });
+
+    session.conversationData.hashtags = hashtagsToAddArray.concat(session.conversationData.hashtags);
+    session.endDialog();
+}
+
+function currentNumberOfHashtagsMessage(tags) {
+    return "The current hashtags for your photo are: " + returnArray(tags);
 }
 
