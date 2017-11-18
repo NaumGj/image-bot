@@ -1,5 +1,5 @@
 var Twitter = require('twitter');
-var http = require('http');
+var https = require('https');
 var Stream = require('stream').Transform;
 
 var client = new Twitter({
@@ -61,7 +61,7 @@ function updateStatus(status, mediaId) {
 
 function uploadTweet(imageUrl, status) {
     return new Promise((resolve, reject) => {
-        http.request(imageUrl, function (response) {
+        https.request(imageUrl, function (response) {
             var data = new Stream();
 
             response.on('data', function (chunk) {
