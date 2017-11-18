@@ -37,9 +37,10 @@ bot.dialog('/', [
     },
     function (session, results) {
         session.userData.name = results.response;
-        builder.Prompts.number(session, "Hi " + results.response + ", How many years have you been coding?"); 
+		builder.Prompts.number(session, "Hi " + results.response + ", please upload a picture?!");
+        // builder.Prompts.number(session, "Hi " + results.response + ", How many years have you been coding?"); 
     },
-    function (session, results) {
+    /*function (session, results) {
         session.userData.coding = results.response;
         builder.Prompts.choice(session, "What language do you code Node using?", ["JavaScript", "CoffeeScript", "TypeScript"]);
     },
@@ -48,5 +49,25 @@ bot.dialog('/', [
         session.send("Got it... " + session.userData.name + 
                     " you've been programming for " + session.userData.coding + 
                     " years and use " + session.userData.language + ".");
-    }
+    },*/
+	function (session) {
+		var msg = session.message;
+		if (msg.attachments && msg.attachments.length > 0) {
+			// Echo back attachment
+			var attachment = msg.attachments[0];
+			session.send({
+				text: "You sent:",
+				attachments: [
+					{
+						contentType: attachment.contentType,
+						contentUrl: attachment.contentUrl,
+						name: attachment.name
+					}
+				]
+			});
+		} else {
+			// Echo back users text
+			session.send("You said: %s", session.message.text);
+		}
+	}
 ]);
