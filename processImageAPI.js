@@ -14,7 +14,7 @@ function analyzeImage(url) {
         headers: { "Content-Type": "application/json", "Ocp-Apim-Subscription-Key": subscriptionKey}
     };
 
-    var uriBase = "https://westcentralus.api.cognitive.microsoft.com/vision/v1.0/analyze?visualFeatures=Categories,Description,Color";
+    var uriBase = "https://westeurope.api.cognitive.microsoft.com/vision/v1.0/analyze?visualFeatures=Categories,Description,Color";
 
     client.post(uriBase, args, function (data, response) {
         // parsed response body as js object 
@@ -26,9 +26,9 @@ function analyzeImage(url) {
 function findFaces(url, analyzeData) {
     
     // Replace the subscriptionKey string value with your valid subscription key.
-    var subscriptionKey = "d1e75858a30d42fb8cd85424ff0dcb05";
+    var subscriptionKey = "705fe0f57f974b79846c4620c4333c97";
 
-    var uriBase = "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceAttributes=age,gender,emotion";
+    var uriBase = "https://westeurope.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceAttributes=age,gender,emotion";
     
     var args = {
         data: '{"url": ' + '"' + url + '"}',
@@ -43,17 +43,19 @@ function findFaces(url, analyzeData) {
 
 function createDescription(url) {
     analyzeImage("https://www.bigdipper.in/wp-content/uploads/2017/07/friends.jpg");
-    findFaces("https://www.bigdipper.in/wp-content/uploads/2017/07/friends.jpg");
+    //findFaces("https://www.bigdipper.in/wp-content/uploads/2017/07/friends.jpg");
 
 }
 
 function handleResponse(analyzeData, faceData) {
-    //console.log(analyzeData);
-    //console.log(faceData);
+    console.log(analyzeData);
+    console.log(faceData);
     //var data2 = eval('('+ faceData + ')');
     //console.log(JSON.stringify(analyzeData.description))
 
-    var json = JSON.parse('{ "NumOfPeople":'+ faceData.length + ', "caption":'+ JSON.stringify(analyzeData.description.captions.text) +', "city":"New York"}'); 
+    //var emotions = faceData
+
+    var json = JSON.parse('{ "NumOfPeople":'+ faceData.length + ', "caption":'+ JSON.stringify(analyzeData.description.captions) +', "tags":'+ JSON.stringify(analyzeData.description.tags) +'}'); 
 
     console.log(json)
 
