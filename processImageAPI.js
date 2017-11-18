@@ -4,7 +4,7 @@ var client = new Client();
 const config = {
     vision: {
         subscriptionKey: "13fb95a85c184168894c5491dc7718e0",
-        uriBase: "https://westeurope.api.cognitive.microsoft.com/vision/v1.0/analyze?visualFeatures=Categories,Description,Color"
+        uriBase: "https://westeurope.api.cognitive.microsoft.com/vision/v1.0/analyze?visualFeatures=Categories,Description,Color&details=Celebrities,Landmarks"
     },
     face: {
         subscriptionKey: "705fe0f57f974b79846c4620c4333c97",
@@ -44,6 +44,14 @@ function handleResponse(analyzeData, faceData) {
         "sadness": 0,
         "surprise": 0
     };
+
+    var celebrities = analyzeData.categories[0].detail.celebrities
+
+    if(celebrities) {
+        celebrities.forEach(function(e) {
+            console.log(e.name)
+        });
+    }
 
     for (var i = 0; i < faceData.length; i++) {
         var dict = faceData[i].faceAttributes.emotion;
@@ -93,8 +101,20 @@ function buildArgs(url, key) {
     };
 }
 
+function generateDescription(numOfPeople, mood) {
+    var text = ""
+    if(numOfPeople>1) {
+        switch(mood) {
+            case "happiness":
+                return "Hanging out with my "+ +" friends"
+        }
+    }
+
+
+}
+
 //EXAMPLE CALL
-analyzeImage("https://udemy-images.udemy.com/course/750x422/92446_9dad_7.jpg").then(
+analyzeImage("https://s.yimg.com/ny/api/res/1.2/rJTe3BvjRp3ts4hGjqG59A--/YXBwaWQ9aGlnaGxhbmRlcjtzbT0xO3c9NzQ0O2g9NjI4/http://media.zenfs.com/en/homerun/feed_manager_auto_publish_494/cab9ccbe831cdb561167c26428482e2e").then(
     function (success) {
         console.log(success);
     },
