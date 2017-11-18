@@ -48,13 +48,10 @@ function handleResponse(analyzeData, faceData) {
 	if(!analyzeData) {
 		analyzeData = {description: {captions: [{"text":""}], tags: ""},categories: [{detail: {celebrities:[],landmarks:[]}}]};
 	}
-	/*if(!analyzeData.categories[0]) {
-		analyzeData.push({categories:[{detail:{}}]})
+	if(!analyzeData.categories) {
+		analyzeData = {description: {captions: [{"text":""}], tags: ""},categories: [{detail: {celebrities:[],landmarks:[]}}]};
 	}
-	if(!analyzeData.categories[0].detail) {
-		console.log("Error, third level")
-		//analyzeData.categories[0].detail = {"celebrities": [], "landmarks" : []}
-	}*/
+	
     var celebrities = analyzeData.categories[0].detail.celebrities
 	var landmarks = analyzeData.categories[0].detail.landmarks
 	var celebritiesList = [];
@@ -177,7 +174,7 @@ function generateDescription(numOfPeople, mood, landmarks, celebrities) {
 }
 
 //EXAMPLE CALL
-analyzeImage("https://media1.britannica.com/eb-media/36/162636-004-B9E5EF88.jpg").then(
+analyzeImage("https://twistedsifter.files.wordpress.com/2012/03/photoshopping-famous-people-celebrities-into-holiday-party-5.jpg?w=800&h=532").then(
     function (success) {
         console.log(success);
         console.log(generateDescription(success.numOfPeople, success.mood, success.landmarks, success.celebrities))
