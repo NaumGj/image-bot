@@ -174,4 +174,8 @@ analyzeImage("http://www.pikosky.sk/wp-content/uploads/2014/03/pariseva-longoria
     }
 );
 
+module.exports = {
+    analyzeImage: analyzeImage
+};
+
 
