@@ -172,11 +172,13 @@ function postPhotoQuestion(session) {
 function postPhotoAction(session, results) {
     var doPostTweet = results.response.entity;
     if (YES == doPostTweet) {
-        twizzy.uploadTweet(session.conversationData.photoUrl, "TEST STATUS").then(function (success) {
+        twizzy.uploadTweet(session.conversationData.photoUrl, 'TEST STATUS').then(function (success) {
                 session.conversationData.twizzyLink = success.text;
             },
             function (error) {
                 console.log(error);
+                session.send(error);
+                session.send(error.message);
                 session.endConversation("Your photo cannot be uploaded. :(");
             });
     } else {
