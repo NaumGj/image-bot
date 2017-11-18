@@ -174,4 +174,8 @@ analyzeImage("https://i.pinimg.com/736x/88/9d/ab/889dab7b8f656e930712be78c4e6434
     }
 );
 
+module.exports = {
+    analyzeImage: analyzeImage
+};
+
 
