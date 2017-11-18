@@ -99,6 +99,8 @@ function handleResponse(analyzeData, faceData) {
 		var items = [[""]]
 	}
 
+    var caption = generateDescription(faceData.length, items[0][0], landmarksList, celebritiesList)
+
     return new Promise((resolve, reject) => {
         try {
             var result = {
@@ -107,7 +109,8 @@ function handleResponse(analyzeData, faceData) {
                 tags: analyzeData.description.tags,
                 mood: items[0][0],
 				celebrities: celebritiesList,
-				landmarks: landmarksList
+				landmarks: landmarksList,
+                caption: caption
             };
             resolve(result);
         } catch (e) {
@@ -134,7 +137,7 @@ function generateDescription(numOfPeople, mood, landmarks, celebrities) {
         if(landmarks.length>0) {
             text += "at the " + landmarks[0]
         }
-        text += "I can't freaking breath!!"
+        text += "I cant freaking breath!!"
     } else if(numOfPeople==0 && landmarks.length>0) {
         text += "Taking in the beauty of the " + landmarks[0]
     } else {
@@ -174,10 +177,9 @@ function generateDescription(numOfPeople, mood, landmarks, celebrities) {
 }
 
 //EXAMPLE CALL
-analyzeImage("https://twistedsifter.files.wordpress.com/2012/03/photoshopping-famous-people-celebrities-into-holiday-party-5.jpg?w=800&h=532").then(
+analyzeImage("https://www.bigdipper.in/wp-content/uploads/2017/07/friends.jpg").then(
     function (success) {
         console.log(success);
-        console.log(generateDescription(success.numOfPeople, success.mood, success.landmarks, success.celebrities))
     },
     function (error) {
         console.log(error);
@@ -187,5 +189,3 @@ analyzeImage("https://twistedsifter.files.wordpress.com/2012/03/photoshopping-fa
 module.exports = {
     analyzeImage: analyzeImage
 };
-
-
