@@ -37,7 +37,8 @@ bot.dialog('/', [
     },
     function (session, results) {
         session.userData.name = results.response;
-		builder.Prompts.number(session, "Hi " + results.response + ", please upload a picture?!");
+		session.send("Hi " + results.response);
+		//builder.Prompts.number(session, "Hi " + results.response + ", please upload a picture?!");
         // builder.Prompts.number(session, "Hi " + results.response + ", How many years have you been coding?"); 
     },
     /*function (session, results) {
