@@ -221,7 +221,7 @@ function removeHashtagsPrompt(session) {
 
 function removeHashtagsAction(session, results) {
     var hashtagsToRemoveLine = results.response;
-    var hashtagsToRemoveArray = hashtagsToRemoveLine.split(",").map(function (hashtagToRemove) {
+    var hashtagsToRemoveArray = hashtagsToRemoveLine.split(" ").map(function (hashtagToRemove) {
 		session.send(hashtagToRemove);
         return hashtagToRemove.trim().toLowerCase();
     });
@@ -238,12 +238,8 @@ function addHashtagsPrompt(session) {
 
 function addHashtagsAction(session, results) {
     var hashtagsToAddLine = results.response;
-    var hashtagsToAddArray = hashtagsToAddLine.split(",").map(function (hashtagToAdd) {
-        if (hashtagToAdd.charAt(0) == "#") {
-			return hashtagToAdd.trim().toLowerCase();
-		} else {
-			return "#" + hashtagToAdd.trim().toLowerCase();
-		}
+    var hashtagsToAddArray = hashtagsToAddLine.split(" ").map(function (hashtagToAdd) {
+		return hashtagToAdd.trim().toLowerCase();
     });
 
     session.conversationData.hashtags = hashtagsToAddArray.concat(session.conversationData.hashtags);
