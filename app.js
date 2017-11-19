@@ -144,12 +144,13 @@ function imageAnalyzer(session) {
             session.conversationData.tweetStatus = success.caption;
             session.conversationData.celebrities = success.celebrities;
             session.conversationData.landmarks = success.landmarks;
+
             session.send(returnArray(session.conversationData.hashtags));
             builder.Prompts.choice(session, "Do you want to remove some of the recommended hashtags?", [YES, NO]);
         },
         function (error) {
-            session.send("ERROR");
             console.log(error);
+            session.send(error.message);
             session.endConversation(error);
         }
     );
@@ -157,16 +158,13 @@ function imageAnalyzer(session) {
 
 function removeHashtagsQuestion(session, results, args, next) {
     var doRemoveHashtags = results.response.entity;
-    session.send("AJDE BRE");
     if (YES == doRemoveHashtags) {
         session.beginDialog('removeHashtags');
     }
 }
 
 function addHashtagsQuestion(session) {
-    session.send("TU SAM 2");
     session.send(currentNumberOfHashtagsMessage(session.conversationData.hashtags));
-    session.send("TU SAM 3");
     builder.Prompts.choice(session, "Do you want to add some more hashtags?", [YES, NO]);
 }
 
