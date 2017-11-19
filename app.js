@@ -49,9 +49,9 @@ bot.dialog('/', [
     function (session, results) {
         removeHashtagsQuestion(session, results);
     },
-    function (session) {
+    /*function (session) {
         addHashtagsQuestion(session);
-    },
+    },*/
     function (session, results) {
         beginAddHashTagsDialog(session, results);
     },
@@ -148,7 +148,10 @@ function removeHashtagsQuestion(session, results) {
 	session.send("AJDE BRE");
     if (YES == doRemoveHashtags) {
         session.beginDialog('removeHashtags');
-    }
+		addHashtagsQuestion(session);
+    } else {
+		addHashtagsQuestion(session);
+	}
 	session.send("TU SAM");
 }
 
