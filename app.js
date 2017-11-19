@@ -173,7 +173,7 @@ function postPhotoQuestion(session) {
 function postPhotoAction(session, results) {
     var doPostTweet = results.response.entity;
     if (YES == doPostTweet) {
-        twizzy.uploadTweet(session.conversationData.photoUrl, session.conversationData.tweetStatus).then(function (success) {
+        twizzy.uploadTweet(session.conversationData.photoUrl, buildTweet(session)).then(function (success) {
                 session.conversationData.twizzyLink = success.text;
                 showTweetLink(session);
             },
@@ -248,5 +248,19 @@ function addHashtagsAction(session, results) {
 
 function currentNumberOfHashtagsMessage(tags) {
     return "The current hashtags for your photo are: " + returnArray(tags);
+}
+
+function buildTweet(session) {
+    var tweet = session.conversationData.tweetStatus;
+
+    session.conversationData.hashtags.forEach(function (e) {
+        tweet += ' #' + e;
+    });
+
+    if(tweet.length > 140) {
+        tweet = tweet.substring(0, 140);
+    }
+
+    return tweet;
 }
 

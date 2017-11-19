@@ -123,6 +123,28 @@ function searchTweets(query) {
 //     }
 // );
 
+function searchUsers(query) {
+    return new Promise((resolve, reject) => {
+        client.get('users/search', {q: query}, (error, data, response) => {
+            if (error) {
+                console.log(error);
+                reject(error);
+            } else {
+                resolve(data);
+            }
+        });
+    });
+}
+
+searchTweets('Jennifer Aniston').then(
+    function (success) {
+        console.log(success.statuses[0].user);
+    },
+    function (error) {
+        console.log(error);
+    }
+);
+
 module.exports = {
     uploadTweet: uploadTweet
 };
