@@ -129,6 +129,7 @@ function imageAnalyzer(session) {
             session.send("I have generated a couple of hashtags for you according to your photo. Here they are: :)");
             console.log(success);
 			session.conversationData.hashtags = success.tags;
+            session.conversationData.tweetStatus = success.caption;
 			console.log("ALOOOOOOOOOOOOOO");
 			console.log(session.conversationData.hashtags);
             session.send(returnArray(session.conversationData.hashtags));
@@ -172,7 +173,7 @@ function postPhotoQuestion(session) {
 function postPhotoAction(session, results) {
     var doPostTweet = results.response.entity;
     if (YES == doPostTweet) {
-        twizzy.uploadTweet(session.conversationData.photoUrl, 'TEST STATUS').then(function (success) {
+        twizzy.uploadTweet(session.conversationData.photoUrl, session.conversationData.tweetStatus).then(function (success) {
                 session.conversationData.twizzyLink = success.text;
                 showTweetLink(session);
             },
