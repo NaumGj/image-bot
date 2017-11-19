@@ -217,8 +217,6 @@ function handlePhotoAttachment(session) {
     if (msg.attachments && msg.attachments.length > 0) {
         var attachment = msg.attachments[0];
         session.conversationData.photoUrl = attachment.contentUrl;
-		session.send("You sent: " + JSON.stringify(attachment));
-		session.send("URL: " + attachment.contentUrl);
         session.endDialog();
     } else {
         session.replaceDialog("uploadPhoto", {reprompt: true});
