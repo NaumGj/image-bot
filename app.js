@@ -134,7 +134,13 @@ function imageAnalyzer(session) {
     ai.analyzeImage(session.conversationData.photoUrl).then(
         function (success) {
             session.send("I have generated a couple of hashtags for you according to your photo. Here they are: :)");
-            session.conversationData.hashtags = success.tags;
+
+            if (success.tags.length > 10) {
+                session.conversationData.hashtags = success.tags.split(9);
+            } else {
+                session.conversationData.hashtags = success.tags;
+            }
+
             session.conversationData.tweetStatus = success.caption;
             session.conversationData.celebrities = success.celebrities;
             session.conversationData.landmarks = success.landmarks;
