@@ -103,7 +103,7 @@ function returnArray(array) {
         if (hashtagsString != "") {
             hashtagsString += ", ";
         }
-        hashtagsString += "#" + hashtag;
+        hashtagsString += "#" + hashtag.trim();
     });
 
     return hashtagsString;
@@ -238,7 +238,11 @@ function addHashtagsPrompt(session) {
 function addHashtagsAction(session, results) {
     var hashtagsToAddLine = results.response;
     var hashtagsToAddArray = hashtagsToAddLine.split(",").map(function (hashtagToAdd) {
-        return hashtagToAdd.trim().toLowerCase();
+        if (hashtagToAdd.charAt(0) == "#") {
+			return hashtagToAdd.trim().toLowerCase();
+		} else {
+			return "#" + hashtagToAdd.trim().toLowerCase();
+		}
     });
 
     session.conversationData.hashtags = hashtagsToAddArray.concat(session.conversationData.hashtags);
