@@ -136,7 +136,7 @@ function imageAnalyzer(session) {
             session.send("I have generated a couple of hashtags for you according to your photo. Here they are: :)");
 
             if (success.tags.length > 10) {
-                session.conversationData.hashtags = success.tags.split(9);
+                session.conversationData.hashtags = success.tags.splice(9);
             } else {
                 session.conversationData.hashtags = success.tags;
             }
