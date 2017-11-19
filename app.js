@@ -46,7 +46,7 @@ bot.dialog('/', [
     function (session) {
         imageAnalyzer(session);
     },
-    function (session, results) {
+    function (session, results, args, next) {
         removeHashtagsQuestion(session, results);
     },
     /*function (session) {
@@ -143,16 +143,17 @@ function imageAnalyzer(session) {
     );
 }
 
-function removeHashtagsQuestion(session, results) {
+function removeHashtagsQuestion(session, results, args, next) {
     var doRemoveHashtags = results.response.entity;
 	session.send("AJDE BRE");
     if (YES == doRemoveHashtags) {
         session.beginDialog('removeHashtags');
-		addHashtagsQuestion(session);
+		//addHashtagsQuestion(session);
     } else {
-		addHashtagsQuestion(session);
+		next();
+		//addHashtagsQuestion(session);
 	}
-	session.send("TU SAM");
+	//session.send("TU SAM");
 }
 
 function addHashtagsQuestion(session) {
