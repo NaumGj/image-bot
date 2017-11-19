@@ -136,14 +136,14 @@ function searchUsers(query) {
     });
 }
 
-searchTweets('Jennifer Aniston').then(
-    function (success) {
-        console.log(success.statuses[0].user);
-    },
-    function (error) {
-        console.log(error);
-    }
-);
+// searchTweets('Jennifer Aniston').then(
+//     function (success) {
+//         console.log(success.statuses[0].user);
+//     },
+//     function (error) {
+//         console.log(error);
+//     }
+// );
 
 module.exports = {
     uploadTweet: uploadTweet

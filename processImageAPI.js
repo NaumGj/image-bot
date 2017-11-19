@@ -190,14 +190,14 @@ function generateDescription(numOfPeople, mood, landmarks, celebrities) {
 }
 
 //EXAMPLE CALL
-analyzeImage("https://kristinainsiena.files.wordpress.com/2011/04/img_1162.jpg").then(
-    function (success) {
-        console.log(success);
-    },
-    function (error) {
-        console.log(error);
-    }
-);
+// analyzeImage("https://kristinainsiena.files.wordpress.com/2011/04/img_1162.jpg").then(
+//     function (success) {
+//         console.log(success);
+//     },
+//     function (error) {
+//         console.log(error);
+//     }
+// );
 
 module.exports = {
     analyzeImage: analyzeImage

@@ -222,7 +222,6 @@ function removeHashtagsPrompt(session) {
 function removeHashtagsAction(session, results) {
     var hashtagsToRemoveLine = results.response;
     var hashtagsToRemoveArray = hashtagsToRemoveLine.split(" ").map(function (hashtagToRemove) {
-		session.send(hashtagToRemove);
         return hashtagToRemove.trim().toLowerCase();
     });
 
