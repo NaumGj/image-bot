@@ -264,6 +264,11 @@ function buildTweet(session) {
     session.conversationData.hashtags.forEach(function (e) {
         tweet += ' #' + e;
     });
+
+    if (tweet.length > 280) {
+        tweet = tweet.substring(0, 280);
+    }
+
     return tweet;
 }
 
