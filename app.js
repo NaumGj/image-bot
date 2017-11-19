@@ -256,8 +256,11 @@ function buildTweet(session) {
 
     session.conversationData.landmarks.forEach(function (e) {
         var tokens = e.split(' ');
+        session.send(tokens);
         tokens.forEach(function (t) {
+            session.send('TOKEN ' + t);
             if (tweet.indexOf('#' + t) == -1 && tweet.indexOf(t) > -1) {
+                session.send('NASAO REC');
                 tweet.replace(t, '#' + t);
             }
         });
