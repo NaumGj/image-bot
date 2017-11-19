@@ -223,7 +223,6 @@ function handlePhotoAttachment(session) {
     } else {
         session.replaceDialog("uploadPhoto", {reprompt: true});
     }
-	imageAnalyzer(session);
 }
 
 function removeHashtagsPrompt(session) {

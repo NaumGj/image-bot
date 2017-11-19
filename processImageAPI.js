@@ -51,7 +51,7 @@ function handleResponse(analyzeData, faceData) {
             categories: [{detail: {celebrities: [], landmarks: []}}]
         };
     }
-    
+
     if (!analyzeData.categories[0]) {
         analyzeData = {
             categories: [{detail: {celebrities: [], landmarks: []}}]
