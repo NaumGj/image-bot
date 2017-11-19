@@ -46,9 +46,9 @@ bot.dialog('/', [
     function (session, results) {
         photoUploadQuestion(session, results);
     },
-    /*function (session) {
+    function (session) {
         imageAnalyzer(session);
-    },*/
+    },
     function (session, results, args, next) {
         removeHashtagsQuestion(session, results);
     },
