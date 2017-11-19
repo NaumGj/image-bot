@@ -52,22 +52,21 @@ bot.dialog('/', [
     function (session, results, args, next) {
         removeHashtagsQuestion(session, results);
     },
-    /*function (session) {
+    function (session) {
         addHashtagsQuestion(session);
-    },*/
+    },
     function (session, results) {
         beginAddHashTagsDialog(session, results);
     },
-    /*function (session) {
+    function (session) {
         postPhotoQuestion(session);
-    },*/
+    },
     function (session, results) {
         postPhotoAction(session, results);
     },
     function (session) {
         showTweetLink(session);
     },
-
 ]);
 
 
@@ -108,7 +107,7 @@ function returnArray(array) {
         if (hashtagsString != "") {
             hashtagsString += " ";
         }
-		hashtagsString += hashtag.trim();
+        hashtagsString += hashtag.trim();
     });
 
     return hashtagsString.trim();
@@ -128,22 +127,22 @@ function photoUploadQuestion(session, results) {
 }
 
 function imageAnalyzer(session) {
-	session.send("ALO 2");
-	console.log(session.conversationData.photoUrl);
-	session.send("ALO 3");
+    session.send("ALO 2");
+    console.log(session.conversationData.photoUrl);
+    session.send("ALO 3");
     ai.analyzeImage(session.conversationData.photoUrl).then(
         function (success) {
             session.send("I have generated a couple of hashtags for you according to your photo. Here they are: :)");
             console.log(success);
-			session.conversationData.hashtags = success.tags;
+            session.conversationData.hashtags = success.tags;
             session.conversationData.tweetStatus = success.caption;
-			console.log(session.conversationData.hashtags);
-			session.send("ALOOOO");
+            console.log(session.conversationData.hashtags);
+            session.send("ALOOOO");
             session.send(returnArray(session.conversationData.hashtags));
             builder.Prompts.choice(session, "Do you want to remove some of the recommended hashtags?", [YES, NO]);
         },
         function (error) {
-			session.send("ERROR");
+            session.send("ERROR");
             console.log(error);
             session.endConversation(error);
         }
@@ -152,18 +151,16 @@ function imageAnalyzer(session) {
 
 function removeHashtagsQuestion(session, results, args, next) {
     var doRemoveHashtags = results.response.entity;
-	session.send("AJDE BRE");
+    session.send("AJDE BRE");
     if (YES == doRemoveHashtags) {
         session.beginDialog('removeHashtags');
     }
-	addHashtagsQuestion(session);
-	//session.send("TU SAM");
 }
 
 function addHashtagsQuestion(session) {
-	session.send("TU SAM 2");
+    session.send("TU SAM 2");
     session.send(currentNumberOfHashtagsMessage(session.conversationData.hashtags));
-	session.send("TU SAM 3");
+    session.send("TU SAM 3");
     builder.Prompts.choice(session, "Do you want to add some more hashtags?", [YES, NO]);
 }
 
@@ -172,7 +169,6 @@ function beginAddHashTagsDialog(session, results) {
     if (YES == doAddHashtags) {
         session.beginDialog('addHashtags');
     }
-	postPhotoQuestion(session);
 }
 
 function postPhotoQuestion(session) {
@@ -246,7 +242,7 @@ function addHashtagsPrompt(session) {
 function addHashtagsAction(session, results) {
     var hashtagsToAddLine = results.response;
     var hashtagsToAddArray = hashtagsToAddLine.split(" ").map(function (hashtagToAdd) {
-		return hashtagToAdd.trim().toLowerCase();
+        return hashtagToAdd.trim().toLowerCase();
     });
 
     session.conversationData.hashtags = hashtagsToAddArray.concat(session.conversationData.hashtags);
