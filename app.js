@@ -103,7 +103,7 @@ function returnArray(array) {
         if (hashtagsString != "") {
             hashtagsString += " ";
         }
-        hashtagsString += hashtag.trim();
+		hashtagsString += hashtag.trim();
     });
 
     return hashtagsString.trim();
@@ -123,22 +123,20 @@ function photoUploadQuestion(session, results) {
 }
 
 function imageAnalyzer(session) {
-    console.log(session.conversationData.photoUrl);
+	console.log(session.conversationData.photoUrl);
     ai.analyzeImage(session.conversationData.photoUrl).then(
         function (success) {
             session.send("I have generated a couple of hashtags for you according to your photo. Here they are: :)");
             console.log(success);
-            session.conversationData.hashtags = success.tags;
+			session.conversationData.hashtags = success.tags;
             session.conversationData.tweetStatus = success.caption;
-            session.conversationData.celebrities = success.celebrities;
-            session.conversationData.landmarks = success.landmarks;
-            console.log(session.conversationData.hashtags);
-            session.send("ALOOOO");
+			console.log(session.conversationData.hashtags);
+			session.send("ALOOOO");
             session.send(returnArray(session.conversationData.hashtags, session));
             builder.Prompts.choice(session, "Do you want to remove some of the recommended hashtags?", [YES, NO]);
         },
         function (error) {
-            session.send("ERROR");
+			session.send("ERROR");
             console.log(error);
             session.endConversation(error);
         }
@@ -147,16 +145,17 @@ function imageAnalyzer(session) {
 
 function removeHashtagsQuestion(session, results) {
     var doRemoveHashtags = results.response.entity;
+	session.send("AJDE BRE");
     if (YES == doRemoveHashtags) {
         session.beginDialog('removeHashtags');
     }
-    session.send("TU SAM");
+	session.send("TU SAM");
 }
 
 function addHashtagsQuestion(session) {
-    session.send("TU SAM 2");
+	session.send("TU SAM 2");
     session.send(currentNumberOfHashtagsMessage(session.conversationData.hashtags));
-    session.send("TU SAM 3");
+	session.send("TU SAM 3");
     builder.Prompts.choice(session, "Do you want to add some more hashtags?", [YES, NO]);
 }
 
@@ -175,7 +174,7 @@ function postPhotoQuestion(session) {
 function postPhotoAction(session, results) {
     var doPostTweet = results.response.entity;
     if (YES == doPostTweet) {
-        twizzy.uploadTweet(session.conversationData.photoUrl, buildTweet(session)).then(function (success) {
+        twizzy.uploadTweet(session.conversationData.photoUrl, session.conversationData.tweetStatus).then(function (success) {
                 session.conversationData.twizzyLink = success.text;
                 showTweetLink(session);
             },
@@ -209,8 +208,8 @@ function handlePhotoAttachment(session) {
     if (msg.attachments && msg.attachments.length > 0) {
         var attachment = msg.attachments[0];
         session.conversationData.photoUrl = attachment.contentUrl;
-        session.send("You sent: " + JSON.stringify(attachment));
-        session.send("URL: " + attachment.contentUrl);
+		session.send("You sent: " + JSON.stringify(attachment));
+		session.send("URL: " + attachment.contentUrl);
         session.endDialog();
     } else {
         session.replaceDialog("uploadPhoto", {reprompt: true});
@@ -240,7 +239,7 @@ function addHashtagsPrompt(session) {
 function addHashtagsAction(session, results) {
     var hashtagsToAddLine = results.response;
     var hashtagsToAddArray = hashtagsToAddLine.split(" ").map(function (hashtagToAdd) {
-        return hashtagToAdd.trim().toLowerCase();
+		return hashtagToAdd.trim().toLowerCase();
     });
 
     session.conversationData.hashtags = hashtagsToAddArray.concat(session.conversationData.hashtags);
@@ -249,28 +248,5 @@ function addHashtagsAction(session, results) {
 
 function currentNumberOfHashtagsMessage(tags) {
     return "The current hashtags for your photo are: " + returnArray(tags);
-}
-
-function buildTweet(session) {
-    var tweet = session.conversationData.tweetStatus;
-
-    session.conversationData.landmarks.forEach(function (e) {
-        var tokens = e.split(' ');
-        tokens.forEach(function (t) {
-            if (tweet.indexOf('#' + t) == -1 && tweet.indexOf(t) > -1) {
-                tweet = tweet.replace(t, '#' + t);
-            }
-        });
-    });
-
-    session.conversationData.hashtags.forEach(function (e) {
-        tweet += ' #' + e;
-    });
-
-    if (tweet.length > 140) {
-        tweet = tweet.substring(0, 140);
-    }
-
-    return tweet;
 }
 
