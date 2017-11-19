@@ -67,7 +67,11 @@ bot.dialog('/', [
     function (session) {
         showTweetLink(session);
     },
-]);
+]).reloadAction('startOver', 'Ok, starting over.', {
+    matches: /^start over$/i
+}).cancelAction('cancelAction', 'Ok, cancel order.', {
+    matches: /^nevermind$|^cancel$|^cancel.*order/i
+});
 
 
 bot.dialog('uploadPhoto', [
