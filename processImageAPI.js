@@ -138,10 +138,15 @@ function generateDescription(numOfPeople, mood, landmarks, celebrities) {
     if (celebrities.length > 0) {
         text += "OMG!! Look who I met! ";
         for (var i = 0; i < celebrities.length; i++) {
-            text += celebrities[i] + " "
+            celebrities[i].split(' ').forEach(function (t) {
+                text += '#' + t + " ";
+            });
         }
         if (landmarks.length > 0) {
-            text += "at the " + landmarks[0]
+            text += "at the " + landmarks[0];
+            landmarks[0].split(' ').forEach(function (l) {
+                text += '#' + l + ' ';
+            });
         }
         text += "I cant freaking breath!!";
     } else if (numOfPeople == 0 && landmarks.length > 0) {

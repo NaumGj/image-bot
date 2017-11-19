@@ -142,7 +142,6 @@ function imageAnalyzer(session) {
             }
 
             session.conversationData.tweetStatus = success.caption;
-            session.conversationData.celebrities = success.celebrities;
             session.conversationData.landmarks = success.landmarks;
 
             session.send(returnArray(session.conversationData.hashtags));
@@ -262,13 +261,6 @@ function buildTweet(session) {
             if (tweet.indexOf('#' + t) == -1 && tweet.indexOf(t) > -1) {
                 tweet = tweet.replace(t, '#' + t);
             }
-        });
-    });
-
-    session.conversationData.celebrities.forEach(function (c) {
-        var tokens = c.split(' ');
-        tokens.forEach(function (t) {
-            tweet += '#' + t;
         });
     });
 
