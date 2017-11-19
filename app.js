@@ -110,6 +110,8 @@ function returnArray(array, session) {
 			hashtagsString += hashtag.trim();
 		} else {
 			hashtagsString += "#" + hashtag.trim();
+			session.send(hashtagsString);
+			session.send(hashtag.trim());
 		}
     });
 
