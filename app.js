@@ -103,10 +103,10 @@ function returnArray(array, session) {
 	//session.send(array[0]);
     array.forEach(function (hashtag) {
 		//session.send(hashtag);
-        if (hashtagsString != "") {
+        /*if (hashtagsString != "") {
 			session.send("NOT EMPTY");
             hashtagsString += ", ";
-        }
+        }*/
 		if (hashtag.trim().charAt(0) == "#") {
 			session.send("STARTS WITH #");
 			hashtagsString += hashtag.trim();
