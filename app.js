@@ -266,7 +266,7 @@ function buildTweet(session) {
     });
 
     session.conversationData.celebrities.forEach(function (c) {
-        var tokens = e.split(' ');
+        var tokens = c.split(' ');
         tokens.forEach(function (t) {
             tweet += '#' + t;
         });
@@ -276,8 +276,8 @@ function buildTweet(session) {
         tweet += ' #' + e;
     });
 
-    if (tweet.length > 140) {
-        tweet = tweet.substring(0, 140);
+    if (tweet.length > 280) {
+        tweet = tweet.substring(0, 280);
     }
 
     return tweet;
