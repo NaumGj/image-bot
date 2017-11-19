@@ -131,17 +131,13 @@ function photoUploadQuestion(session, results) {
 }
 
 function imageAnalyzer(session) {
-    session.send("ALO 2");
-    console.log(session.conversationData.photoUrl);
-    session.send("ALO 3");
     ai.analyzeImage(session.conversationData.photoUrl).then(
         function (success) {
             session.send("I have generated a couple of hashtags for you according to your photo. Here they are: :)");
-            console.log(success);
             session.conversationData.hashtags = success.tags;
             session.conversationData.tweetStatus = success.caption;
-            console.log(session.conversationData.hashtags);
-            session.send("ALOOOO");
+            session.conversationData.celebrities = success.celebrities;
+            session.conversationData.landmarks = success.landmarks;
             session.send(returnArray(session.conversationData.hashtags));
             builder.Prompts.choice(session, "Do you want to remove some of the recommended hashtags?", [YES, NO]);
         },
@@ -183,13 +179,11 @@ function postPhotoQuestion(session) {
 function postPhotoAction(session, results) {
     var doPostTweet = results.response.entity;
     if (YES == doPostTweet) {
-        twizzy.uploadTweet(session.conversationData.photoUrl, session.conversationData.tweetStatus).then(function (success) {
+        twizzy.uploadTweet(session.conversationData.photoUrl, buildTweet(session)).then(function (success) {
                 session.conversationData.twizzyLink = success.text;
                 showTweetLink(session);
             },
             function (error) {
-                console.log(error);
-                session.send(error);
                 session.send(error.message);
                 session.endConversation("Your photo cannot be uploaded. :(");
             });
@@ -199,9 +193,7 @@ function postPhotoAction(session, results) {
 }
 
 function showTweetLink(session) {
-    session.send('showTweetLink METHOD');
     if (session.conversationData.twizzyLink) {
-        session.send('I OVDE SAM USAO');
         session.send(session.conversationData.twizzyLink);
     } else {
         session.send("There is no tweet to show :(");
@@ -255,5 +247,23 @@ function addHashtagsAction(session, results) {
 
 function currentNumberOfHashtagsMessage(tags) {
     return "The current hashtags for your photo are: " + returnArray(tags);
+}
+
+function buildTweet(session) {
+    var tweet = session.conversationData.tweetStatus;
+
+    session.conversationData.landmarks.forEach(function (e) {
+        var tokens = e.split(' ');
+        tokens.forEach(function (t) {
+            if (tweet.indexOf('#' + t) == -1 && tweet.indexOf(t) > -1) {
+                tweet = tweet.replace(t, '#' + t);
+            }
+        });
+    });
+
+    session.conversationData.hashtags.forEach(function (e) {
+        tweet += ' #' + e;
+    });
+    return tweet;
 }
 
