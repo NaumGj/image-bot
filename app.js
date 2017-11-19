@@ -96,7 +96,7 @@ bot.dialog('addHashtags', [
 ]);
 
 
-function returnArray(array) {
+function returnArray(array, session) {
 	session.send("TEST RETURN ARRAY");
     var hashtagsString = "";
 
@@ -139,8 +139,7 @@ function imageAnalyzer(session) {
             session.conversationData.tweetStatus = success.caption;
 			console.log(session.conversationData.hashtags);
 			session.send("ALOOOO");
-			returnArray(session.conversationData.hashtags);
-            //session.send(returnArray(session.conversationData.hashtags));
+            session.send(returnArray(session.conversationData.hashtags, session));
             builder.Prompts.choice(session, "Do you want to remove some of the recommended hashtags?", [YES, NO]);
         },
         function (error) {
