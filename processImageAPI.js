@@ -51,9 +51,8 @@ function handleResponse(analyzeData, faceData) {
             categories: [{detail: {celebrities: [], landmarks: []}}]
         };
     }
-    if (!analyzeData.categories) {
+    if (!analyzeData.categories[0]) {
         analyzeData = {
-            description: {captions: [{"text": ""}], tags: ""},
             categories: [{detail: {celebrities: [], landmarks: []}}]
         };
     }
