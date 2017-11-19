@@ -49,7 +49,7 @@ bot.dialog('/', [
     function (session) {
         imageAnalyzer(session);
     },
-    function (session, results, args, next) {
+    function (session, results) {
         removeHashtagsQuestion(session, results);
     },
     function (session) {
@@ -71,8 +71,9 @@ bot.dialog('/', [
     matches: /^start over$/i
 }).cancelAction('cancelAction', 'Ok, cancel order.', {
     matches: /^nevermind$|^cancel$|^cancel.*order/i
+}).endConversationAction('endConversationAction', 'Ok, goodbye!', {
+    matches: /^goodbye$/i
 });
-
 
 bot.dialog('uploadPhoto', [
     function (session) {
