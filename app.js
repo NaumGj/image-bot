@@ -139,7 +139,8 @@ function imageAnalyzer(session) {
             session.conversationData.tweetStatus = success.caption;
 			console.log(session.conversationData.hashtags);
 			session.send("ALOOOO");
-            session.send(returnArray(session.conversationData.hashtags));
+			returnArray(session.conversationData.hashtags);
+            //session.send(returnArray(session.conversationData.hashtags));
             builder.Prompts.choice(session, "Do you want to remove some of the recommended hashtags?", [YES, NO]);
         },
         function (error) {
