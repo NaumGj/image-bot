@@ -276,8 +276,8 @@ function buildTweet(session) {
         tweet += ' #' + e;
     });
 
-    if (tweet.length > 280) {
-        tweet = tweet.substring(0, 280);
+    if (tweet.length > 140) {
+        tweet = tweet.substring(0, 140);
     }
 
     return tweet;
