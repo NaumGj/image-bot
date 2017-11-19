@@ -134,8 +134,9 @@ function imageAnalyzer(session) {
             session.send("I have generated a couple of hashtags for you according to your photo. Here they are: :)");
             console.log(success);
 			session.conversationData.hashtags = success.tags;
+			session.send("ALO");
             session.conversationData.tweetStatus = success.caption;
-			console.log("ALOOOOOOOOOOOOOO");
+			session.send("ALOOOOOOOOOOOOOO");
 			console.log(session.conversationData.hashtags);
             session.send(returnArray(session.conversationData.hashtags));
             builder.Prompts.choice(session, "Do you want to remove some of the recommended hashtags?", [YES, NO]);
