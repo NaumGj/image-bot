@@ -43,10 +43,9 @@ bot.dialog('/', [
     function (session, results) {
         photoUploadQuestion(session, results);
     },
-    function (session) {
-		session.send("ALO PICKO");
+    /*function (session) {
         imageAnalyzer(session);
-    },
+    },*/
     function (session, results, args, next) {
         removeHashtagsQuestion(session, results);
     },
@@ -215,10 +214,11 @@ function handlePhotoAttachment(session) {
         session.conversationData.photoUrl = attachment.contentUrl;
 		session.send("You sent: " + JSON.stringify(attachment));
 		session.send("URL: " + attachment.contentUrl);
-        //session.endDialog();
+        session.endDialog();
     } else {
         session.replaceDialog("uploadPhoto", {reprompt: true});
     }
+	imageAnalyzer(session);
 }
 
 function removeHashtagsPrompt(session) {
