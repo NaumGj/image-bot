@@ -32,8 +32,6 @@ server.post('/api/messages', connector.listen());
 
 // Create your bot with a function to receive messages from the user
 var bot = new builder.UniversalBot(connector);
-var luisAppUrl = process.env.LUIS_APP_URL || 'https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/32a2450e-bc78-4657-9961-de9b81f5e0e1?subscription-key=818acb0108934ad099d3c16d1ab19a8c&verbose=true&timezoneOffset=0s';
-bot.recognizer(new builder.LuisRecognizer(luisAppUrl));
 
 const YES = "Yes";
 const NO = "No";
@@ -78,9 +76,7 @@ bot.dialog('uploadPhoto', [
     function (session) {
         handlePhotoAttachment(session);
     }
-]).triggerAction({
-    matches: 'Utilities.UploadPhoto',
-});
+]);
 
 bot.dialog('removeHashtags', [
     function (session) {
@@ -128,7 +124,9 @@ function photoUploadQuestion(session, results) {
 }
 
 function imageAnalyzer(session) {
+	session.send("ALO 2");
 	console.log(session.conversationData.photoUrl);
+	session.send("ALO 3");
     ai.analyzeImage(session.conversationData.photoUrl).then(
         function (success) {
             session.send("I have generated a couple of hashtags for you according to your photo. Here they are: :)");
@@ -256,3 +254,4 @@ function addHashtagsAction(session, results) {
 function currentNumberOfHashtagsMessage(tags) {
     return "The current hashtags for your photo are: " + returnArray(tags);
 }
+
