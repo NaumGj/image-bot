@@ -32,8 +32,6 @@ server.post('/api/messages', connector.listen());
 
 // Create your bot with a function to receive messages from the user
 var bot = new builder.UniversalBot(connector);
-var luisAppUrl = process.env.LUIS_APP_URL || 'https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/32a2450e-bc78-4657-9961-de9b81f5e0e1?subscription-key=818acb0108934ad099d3c16d1ab19a8c&verbose=true&timezoneOffset=0s';
-bot.recognizer(new builder.LuisRecognizer(luisAppUrl));
 
 const YES = "Yes";
 const NO = "No";
@@ -45,9 +43,9 @@ bot.dialog('/', [
     function (session, results) {
         photoUploadQuestion(session, results);
     },
-    function (session) {
+    /*function (session) {
         imageAnalyzer(session);
-    },
+    },*/
     function (session, results, args, next) {
         removeHashtagsQuestion(session, results);
     },
@@ -77,9 +75,7 @@ bot.dialog('uploadPhoto', [
     function (session) {
         handlePhotoAttachment(session);
     }
-]).triggerAction({
-    matches: 'Utilities.UploadPhoto',
-});
+]);
 
 bot.dialog('removeHashtags', [
     function (session) {
@@ -127,7 +123,9 @@ function photoUploadQuestion(session, results) {
 }
 
 function imageAnalyzer(session) {
+	session.send("ALO 2");
 	console.log(session.conversationData.photoUrl);
+	session.send("ALO 3");
     ai.analyzeImage(session.conversationData.photoUrl).then(
         function (success) {
             session.send("I have generated a couple of hashtags for you according to your photo. Here they are: :)");
@@ -136,7 +134,7 @@ function imageAnalyzer(session) {
             session.conversationData.tweetStatus = success.caption;
 			console.log(session.conversationData.hashtags);
 			session.send("ALOOOO");
-            session.send(returnArray(session.conversationData.hashtags, session));
+            session.send(returnArray(session.conversationData.hashtags));
             builder.Prompts.choice(session, "Do you want to remove some of the recommended hashtags?", [YES, NO]);
         },
         function (error) {
@@ -169,7 +167,7 @@ function beginAddHashTagsDialog(session, results) {
     if (YES == doAddHashtags) {
         session.beginDialog('addHashtags');
     }
-	
+	postPhotoQuestion(session);
 }
 
 function postPhotoQuestion(session) {
@@ -191,7 +189,7 @@ function postPhotoAction(session, results) {
                 session.endConversation("Your photo cannot be uploaded. :(");
             });
     } else {
-        session.endConversation("Your photo won't be uploaded.");
+        session.endConversation("Your photo won't be uploaded :(");
     }
 }
 
@@ -201,7 +199,7 @@ function showTweetLink(session) {
         session.send('I OVDE SAM USAO');
         session.send(session.conversationData.twizzyLink);
     } else {
-        session.send("There is no tweet to show. :(");
+        session.send("There is no tweet to show :(");
     }
 }
 
@@ -220,6 +218,7 @@ function handlePhotoAttachment(session) {
     } else {
         session.replaceDialog("uploadPhoto", {reprompt: true});
     }
+	imageAnalyzer(session);
 }
 
 function removeHashtagsPrompt(session) {
@@ -255,3 +254,4 @@ function addHashtagsAction(session, results) {
 function currentNumberOfHashtagsMessage(tags) {
     return "The current hashtags for your photo are: " + returnArray(tags);
 }
+
