@@ -135,7 +135,7 @@ function imageAnalyzer(session) {
             session.conversationData.tweetStatus = success.caption;
 			console.log(session.conversationData.hashtags);
 			session.send("ALOOOO");
-            session.send(returnArray(session.conversationData.hashtags, session));
+            session.send(returnArray(session.conversationData.hashtags));
             builder.Prompts.choice(session, "Do you want to remove some of the recommended hashtags?", [YES, NO]);
         },
         function (error) {
@@ -215,7 +215,7 @@ function handlePhotoAttachment(session) {
         session.conversationData.photoUrl = attachment.contentUrl;
 		session.send("You sent: " + JSON.stringify(attachment));
 		session.send("URL: " + attachment.contentUrl);
-        session.endDialog();
+        //session.endDialog();
     } else {
         session.replaceDialog("uploadPhoto", {reprompt: true});
     }
