@@ -101,7 +101,7 @@ function returnArray(array) {
 
 	//session.send(array[0]);
     array.forEach(function (hashtag) {
-		session.send(hashtag
+		session.send(hashtag);
         if (hashtagsString != "") {
             hashtagsString += ", ";
         }
