@@ -112,6 +112,7 @@ function returnArray(array, session) {
 			hashtagsString += "#" + hashtag.trim();
 			session.send(hashtagsString);
 			session.send(hashtag.trim());
+			session.send(hashtag.length);
 			session.send(hashtag.trim().length);
 		}
     });
