@@ -104,16 +104,17 @@ function returnArray(array, session) {
     array.forEach(function (hashtag) {
 		//session.send(hashtag);
         if (hashtagsString != "") {
+			session.send("NOT EMPTY");
             hashtagsString += ", ";
         }
 		if (hashtag.trim().charAt(0) == "#") {
+			session.send("STARTS WITH #");
 			hashtagsString += hashtag.trim();
 		} else {
+			session.send(hashtagsString);
 			hashtagsString += "#" + hashtag.trim();
 			session.send(hashtagsString);
 			session.send(hashtag.trim());
-			session.send(hashtag.length);
-			session.send(hashtag.trim().length);
 		}
     });
 
