@@ -44,6 +44,7 @@ bot.dialog('/', [
         photoUploadQuestion(session, results);
     },
     function (session) {
+		session.send("ALO PICKO");
         imageAnalyzer(session);
     },
     function (session, results, args, next) {
@@ -165,7 +166,7 @@ function beginAddHashTagsDialog(session, results) {
     if (YES == doAddHashtags) {
         session.beginDialog('addHashtags');
     }
-	
+	postPhotoQuestion(session);
 }
 
 function postPhotoQuestion(session) {
@@ -187,7 +188,7 @@ function postPhotoAction(session, results) {
                 session.endConversation("Your photo cannot be uploaded. :(");
             });
     } else {
-        session.endConversation("Your photo won't be uploaded.");
+        session.endConversation("Your photo won't be uploaded :(");
     }
 }
 
@@ -197,7 +198,7 @@ function showTweetLink(session) {
         session.send('I OVDE SAM USAO');
         session.send(session.conversationData.twizzyLink);
     } else {
-        session.send("There is no tweet to show. :(");
+        session.send("There is no tweet to show :(");
     }
 }
 
