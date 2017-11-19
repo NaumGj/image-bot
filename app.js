@@ -97,6 +97,7 @@ bot.dialog('addHashtags', [
 
 
 function returnArray(array) {
+	session.send("TEST RETURN ARRAY");
     var hashtagsString = "";
 
 	//session.send(array[0]);
