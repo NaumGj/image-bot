@@ -96,31 +96,17 @@ bot.dialog('addHashtags', [
 ]);
 
 
-function returnArray(array, session) {
-	session.send("TEST RETURN ARRAY");
+function returnArray(array) {
     var hashtagsString = "";
 
-	//session.send(array[0]);
     array.forEach(function (hashtag) {
-		//session.send(hashtag);
-        /*if (hashtagsString != "") {
-			session.send("NOT EMPTY");
-            hashtagsString += ", ";
-        }*/
-		if (hashtag.trim().charAt(0) == "#") {
-			session.send("STARTS WITH #");
-			hashtagsString += hashtag.trim();
-		} else {
-			session.send(hashtagsString);
-			hashtagsString += "#" + hashtag.trim();
-			session.send(hashtagsString);
-			session.send(hashtag.trim());
-		}
+        if (hashtagsString != "") {
+            hashtagsString += " ";
+        }
+		hashtagsString += hashtag.trim();
     });
 
-	session.send(hashtagsString);
-	
-    return hashtagsString;
+    return hashtagsString.trim();
 }
 
 function initialPrompt(session) {
