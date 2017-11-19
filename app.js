@@ -103,7 +103,7 @@ function returnArray(array) {
         if (hashtagsString != "") {
             hashtagsString += ", ";
         }
-        hashtagsString += hashtag;
+        hashtagsString += "#" + hashtag;
     });
 
     return hashtagsString;
@@ -238,7 +238,7 @@ function addHashtagsPrompt(session) {
 function addHashtagsAction(session, results) {
     var hashtagsToAddLine = results.response;
     var hashtagsToAddArray = hashtagsToAddLine.split(",").map(function (hashtagToAdd) {
-        return hashtagToAdd.trim().toLowerCase();
+        return "#" + hashtagToAdd.trim().toLowerCase();
     });
 
     session.conversationData.hashtags = hashtagsToAddArray.concat(session.conversationData.hashtags);

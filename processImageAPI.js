@@ -149,10 +149,18 @@ function generateDescription(numOfPeople, mood, landmarks, celebrities) {
         if (numOfPeople > 1) {
             switch (mood) {
                 case "happiness":
-                    text += "Hanging out with my " + (numOfPeople - 1) + " best friends";
+					if(numOfPeople==2){
+						text += "Hanging out with my best friend"
+					}else {
+						text += "Hanging out with my "+ (numOfPeople-1) +" best friends"
+					}
                     break;
                 case "neutral":
-                    text += "Relaxing with my " + (numOfPeople - 1) + " friends";
+					if(numOfPeople==2){
+						text += "Relaxing with a friend"
+					}else {
+						text += "Relaxing with my "+ (numOfPeople-1) +" friends"
+					}
                     break;
                 default:
                     text += "Just a picture of me and " + (numOfPeople - 1) + " other people";
@@ -182,7 +190,7 @@ function generateDescription(numOfPeople, mood, landmarks, celebrities) {
 }
 
 //EXAMPLE CALL
-analyzeImage("https://www.bigdipper.in/wp-content/uploads/2017/07/friends.jpg").then(
+analyzeImage("https://kristinainsiena.files.wordpress.com/2011/04/img_1162.jpg").then(
     function (success) {
         console.log(success);
     },
