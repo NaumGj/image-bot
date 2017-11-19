@@ -265,6 +265,13 @@ function buildTweet(session) {
         });
     });
 
+    session.conversationData.celebrities.forEach(function (c) {
+        var tokens = e.split(' ');
+        tokens.forEach(function (t) {
+            tweet += '#' + t;
+        });
+    });
+
     session.conversationData.hashtags.forEach(function (e) {
         tweet += ' #' + e;
     });
