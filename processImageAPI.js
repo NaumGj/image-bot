@@ -51,11 +51,11 @@ function handleResponse(analyzeData, faceData) {
             categories: [{detail: {celebrities: [], landmarks: []}}]
         };
     }
-    if (!analyzeData.categories[0]) {
-        analyzeData = {
-            categories: [{detail: {celebrities: [], landmarks: []}}]
-        };
-    }
+    // if (!analyzeData.categories[0]) {
+    //     analyzeData = {
+    //         categories: [{detail: {celebrities: [], landmarks: []}}]
+    //     };
+    // }
 
     var celebrities = analyzeData.categories[0].detail.celebrities;
     var landmarks = analyzeData.categories[0].detail.landmarks;
