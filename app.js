@@ -99,8 +99,9 @@ bot.dialog('addHashtags', [
 function returnArray(array) {
     var hashtagsString = "";
 
-	session.send(array[0]);
+	//session.send(array[0]);
     array.forEach(function (hashtag) {
+		session.send(hashtag
         if (hashtagsString != "") {
             hashtagsString += ", ";
         }
@@ -134,9 +135,7 @@ function imageAnalyzer(session) {
             session.send("I have generated a couple of hashtags for you according to your photo. Here they are: :)");
             console.log(success);
 			session.conversationData.hashtags = success.tags;
-			session.send("ALO");
             session.conversationData.tweetStatus = success.caption;
-			session.send("ALOOOOOOOOOOOOOO");
 			console.log(session.conversationData.hashtags);
             session.send(returnArray(session.conversationData.hashtags));
             builder.Prompts.choice(session, "Do you want to remove some of the recommended hashtags?", [YES, NO]);
