@@ -49,15 +49,15 @@ bot.dialog('/', [
     function (session, results, args, next) {
         removeHashtagsQuestion(session, results);
     },
-    function (session) {
+    /*function (session) {
         addHashtagsQuestion(session);
-    },
+    },*/
     function (session, results) {
         beginAddHashTagsDialog(session, results);
     },
-    function (session) {
+    /*function (session) {
         postPhotoQuestion(session);
-    },
+    },*/
     function (session, results) {
         postPhotoAction(session, results);
     },
@@ -148,11 +148,8 @@ function removeHashtagsQuestion(session, results, args, next) {
 	session.send("AJDE BRE");
     if (YES == doRemoveHashtags) {
         session.beginDialog('removeHashtags');
-		//addHashtagsQuestion(session);
-    } else {
-		next();
-		//addHashtagsQuestion(session);
-	}
+    }
+	addHashtagsQuestion(session);
 	//session.send("TU SAM");
 }
 
@@ -168,6 +165,7 @@ function beginAddHashTagsDialog(session, results) {
     if (YES == doAddHashtags) {
         session.beginDialog('addHashtags');
     }
+	
 }
 
 function postPhotoQuestion(session) {
