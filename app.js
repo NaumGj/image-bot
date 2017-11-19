@@ -49,9 +49,9 @@ bot.dialog('/', [
     function (session, results, args, next) {
         removeHashtagsQuestion(session, results);
     },
-    /*function (session) {
+    function (session) {
         addHashtagsQuestion(session);
-    },*/
+    },
     function (session, results) {
         beginAddHashTagsDialog(session, results);
     },
