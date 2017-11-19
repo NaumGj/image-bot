@@ -130,6 +130,8 @@ function imageAnalyzer(session) {
             console.log(success);
             session.conversationData.hashtags = success.tags;
             session.conversationData.tweetStatus = success.caption;
+            session.conversationData.celebrities = success.celebrities;
+            session.conversationData.landmarks = success.landmarks;
             console.log(session.conversationData.hashtags);
             session.send("ALOOOO");
             session.send(returnArray(session.conversationData.hashtags, session));
@@ -251,6 +253,15 @@ function currentNumberOfHashtagsMessage(tags) {
 
 function buildTweet(session) {
     var tweet = session.conversationData.tweetStatus;
+
+    session.conversationData.landmarks.forEach(function (e) {
+        var tokens = e.split(' ');
+        tokens.forEach(function (t) {
+            if (tweet.indexOf('#' + t) == -1 && tweet.indexOf(t) > -1) {
+                tweet.replace(t, '#' + t);
+            }
+        });
+    });
 
     session.conversationData.hashtags.forEach(function (e) {
         tweet += ' #' + e;
