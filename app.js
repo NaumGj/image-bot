@@ -99,11 +99,16 @@ bot.dialog('addHashtags', [
 function returnArray(array) {
     var hashtagsString = "";
 
+	session.send(array[0]);
     array.forEach(function (hashtag) {
         if (hashtagsString != "") {
             hashtagsString += ", ";
         }
-        hashtagsString += "#" + hashtag.trim();
+		if (hashtag.trim().charAt(0) == "#") {
+			hashtagsString += hashtag.trim();
+		} else {
+			hashtagsString += "#" + hashtag.trim();
+		}
     });
 
     return hashtagsString;
@@ -222,6 +227,7 @@ function removeHashtagsPrompt(session) {
 function removeHashtagsAction(session, results) {
     var hashtagsToRemoveLine = results.response;
     var hashtagsToRemoveArray = hashtagsToRemoveLine.split(",").map(function (hashtagToRemove) {
+		session.send(hashtagToRemove);
         return hashtagToRemove.trim().toLowerCase();
     });
 
